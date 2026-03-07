@@ -14,13 +14,24 @@ jobs:
         with:
           fetch-depth: 2  # needed to detect changed files
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Substitute variables
+        run: python scripts/substitute.py
+
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./remote/
+          local-dir: ./dist/
           server-dir: /
           exclude: |
             **/.git*

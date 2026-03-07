@@ -126,7 +126,7 @@
                 Be aware that this is only checked on player log in, so it will not swap for as long as nobody is logging in.
             -->
             <group name="Zones">
-                <pos x="13900" z="12500" />
+                <pos x="{{SPAWN_X}}" z="{{SPAWN_Z}}" />
             </group>
         </generator_posbubbles>
     </fresh>
@@ -158,7 +158,7 @@
         </group_params>
         <generator_posbubbles>
             <group name="Zones">
-                <pos x="13917" z="12550" />
+                <pos x="{{SPAWN_X}}" z="{{SPAWN_Z}}" />
             </group>
         </generator_posbubbles>
     </hop>
@@ -190,7 +190,7 @@
         </group_params>
         <generator_posbubbles>
             <group name="Zones">
-                <pos x="13917" z="12550" />
+                <pos x="{{SPAWN_X}}" z="{{SPAWN_Z}}" />
             </group>
         </generator_posbubbles>
     </travel>

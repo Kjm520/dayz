@@ -1,0 +1,9 @@
+# ============================================================
+# DayZ Server Configuration Variables
+# These values are substituted into the files under remote/
+# before deployment. Use {{VAR_NAME}} as the placeholder.
+# ============================================================
+
+# --- Spawn Points (Sakhal) ---
+SPAWN_X: "13900"
+SPAWN_Z: "12500"
