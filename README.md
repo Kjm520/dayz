@@ -1,24 +1,35 @@
-# DayZ Server Configuration
-
-Custom server configuration files for DayZ offline/local play across multiple maps. Each map directory contains the full mission file structure used by the DayZ game server, with custom overrides applied where noted.
 
 ## Maps
 
 ### Chernarus (`dayzOffline.chernarusplus`)
 
-The original DayZ map. No custom modifications — uses default vanilla configuration.
+
+
+
+
+
+
+
+
 
 ---
 
 ### Livonia (`dayzOffline.enoch`)
 
-DayZ's second official map set in Eastern Europe. No custom modifications — uses default vanilla configuration.
+
+
+
+
 
 ---
 
 ### Sakhal (`dayzOffline.sakhal`)
 
-DayZ's arctic island map. Custom overrides are maintained in the `custom/` subdirectory and take precedence over the base `db/` files.
+
+
+
+
+
 
 **Custom files (`custom/`):**
 
