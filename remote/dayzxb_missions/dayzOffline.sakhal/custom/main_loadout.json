@@ -72,7 +72,7 @@
           ]
         },
         {
-          "itemType": "SVD",
+          "itemType": "ASVAL",
           "spawnWeight": 1,
           "attributes": {
             "healthMin": 1.0,
@@ -83,7 +83,7 @@
           "quickBarSlot": 1,
           "complexChildrenTypes": [
             {
-              "itemType": "PSO11Optic",
+              "itemType": "ReflexOptic",
               "attributes": {
                 "healthMin": 1.0,
                 "healthMax": 1.0,
@@ -103,7 +103,7 @@
               "quickBarSlot": -1
             },
             {
-              "itemType": "Mag_SVD_10Rnd",
+              "itemType": "Mag_Vikhr_30Rnd",
               "attributes": {
                 "healthMin": 1.0,
                 "healthMax": 1.0,
@@ -185,18 +185,7 @@
       "slotName": "Headgear",
       "discreteItemSets": [
         {
-          "itemType": "Ssh68Helmet",
-          "spawnWeight": 1,
-          "attributes": {
-            "healthMin": 1.0,
-            "healthMax": 1.0,
-            "quantityMin": 1.0,
-            "quantityMax": 1.0
-          },
-          "quickBarSlot": -1
-        },
-        {
-          "itemType": "GorkaHelmet",
+          "itemType": "BalaclavaMask_White",
           "spawnWeight": 1,
           "attributes": {
             "healthMin": 1.0,
@@ -212,7 +201,7 @@
       "slotName": "Gloves",
       "discreteItemSets": [
         {
-          "itemType": "TacticalGloves_Black",
+          "itemType": "WoolGloves_White",
           "spawnWeight": 1,
           "attributes": {
             "healthMin": 1.0,
@@ -420,7 +409,9 @@
         "WeaponCleaningKit",
         "PurificationTablets",
         "Canteen",
-        "AmmoBox_45ACP_25rnd"
+        "AmmoBox_45ACP_25rnd",
+        "Mag_Vikhr_30Rnd",
+        "Mag_Vikhr_30Rnd"
       ]
     }
   ]
