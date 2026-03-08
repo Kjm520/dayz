@@ -4,8 +4,26 @@
 # before deployment. Use {{VAR_NAME}} as the placeholder.
 # ============================================================
 
-# --- Spawn Points (Sakhal) --- map: 15360 x 15360
-SPAWN_X: "12000"
-SPAWN_Z: "12000"
+# --- Spawn Coordinates (Sakhal) --- map: 15360 x 15360
+SPAWN_X: "12100"
+SPAWN_Z: "12100"
 
 
+# --- Spawn Parameters (Sakhal) ---
+
+
+MIN_DIST_INFECTED: "0"
+
+MAX_DIST_INFECTED: "500"
+
+MIN_DIST_PLAYER: "0"
+
+MAX_DIST_PLAYER: "500"
+
+MIN_DIST_STATIC: "0"
+
+MAX_DIST_STATIC: "500"
+
+MIN_DIST_TRIGGER: "0"
+
+MAX_DIST_TRIGGER: "500"
