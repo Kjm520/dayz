@@ -90,7 +90,7 @@
           "itemType": "M14",
           "spawnWeight": 1,
           "attributes": {
-            "healthMin": 0.8,
+            "healthMin": 1.0,
             "healthMax": 1.0,
             "quantityMin": 1.0,
             "quantityMax": 1.0
@@ -100,8 +100,8 @@
             {
               "itemType": "ReflexOptic",
               "attributes": {
-                "healthMin": 0.9,
-                "healthMax": 0.9,
+                "healthMin": 1.0,
+                "healthMax": 1.0,
                 "quantityMin": 1.0,
                 "quantityMax": 1.0
               },
@@ -120,8 +120,8 @@
             {
               "itemType": "Mag_M14_20Rnd",
               "attributes": {
-                "healthMin": 0.8,
-                "healthMax": 0.9,
+                "healthMin": 1.0,
+                "healthMax": 1.0,
                 "quantityMin": 1.0,
                 "quantityMax": 1.0
               },
@@ -169,7 +169,7 @@
       "slotName": "Headgear",
       "discreteItemSets": [
         {
-          "itemType": "SnowstormUshanka_Olive",
+          "itemType": "SnowstormUshanka_Brown",
           "spawnWeight": 1,
           "attributes": {
             "healthMin": 1.0,
@@ -324,16 +324,6 @@
           "quickBarSlot": -1
         },
         {
-          "itemType": "Pear",
-          "attributes": {
-            "healthMin": 1.0,
-            "healthMax": 1.0,
-            "quantityMin": 1.0,
-            "quantityMax": 1.0
-          },
-          "quickBarSlot": -1
-        },
-        {
           "itemType": "SodaCan_Cola",
           "attributes": {
             "healthMin": 1.0,
@@ -380,10 +370,12 @@
         "PowderedMilk",
         "PowderedMilk",
         "Canteen",
+        "Canteen",
         "Epinephrine",
         "Epinephrine",
         "FlashGrenade",
-        "Mag_Vikhr_30Rnd",
+        "FlashGrenade",
+        "Mag_M14_20Rnd",
         "Mag_M14_20Rnd",
         "Mag_M14_20Rnd",
         "Mag_Vikhr_30Rnd",
