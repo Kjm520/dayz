@@ -9,8 +9,11 @@ placeholders. Then applies the density multipliers to every mission in dist/:
   * db/events.xml Infected* children lootmin/lootmax capped at INFECTED_LOOT_MAX
   * db/types.xml nominal/min per category            x LOOT_<CATEGORY>_MULTIPLIER (e.g. LOOT_FOOD_MULTIPLIER)
   * db/types.xml restock raised to at least LOOT_RESTOCK_MIN seconds
+  * db/types.xml min (only) x LOOT_MIN_MULTIPLIER, widening the gap below nominal
 
 Counts round up, so a scaled-down item never reaches zero unless it already was.
+The exception is LOOT_MIN_MULTIPLIER, which rounds down (floored at 1) so that
+small thresholds actually move: a min of 3 at 0.85 becomes 2, not 3.
 
 Placeholder rules:
   * XML and other text files: {{VAR}} is replaced verbatim.
@@ -108,6 +111,11 @@ def scale(value, multiplier):
     return 0 if value == 0 else math.ceil(value * multiplier)
 
 
+def scale_min(value, multiplier):
+    """Scale a min threshold, rounding down but never below 1. Zero stays zero."""
+    return 0 if value == 0 else max(1, math.floor(value * multiplier))
+
+
 def apply_territory_multipliers(path, config, used):
     if not os.path.exists(path):
         return
@@ -179,6 +187,11 @@ def apply_types_tuning(path, config, used):
         used.add("LOOT_RESTOCK_MIN")
         restock_min = int(restock_min)
 
+    min_multiplier = config.get("LOOT_MIN_MULTIPLIER")
+    if min_multiplier is not None:
+        used.add("LOOT_MIN_MULTIPLIER")
+        min_multiplier = float(min_multiplier)
+
     def replace_type(m):
         name, block = m.group(1), m.group(2)
         category = re.search(r'<category name="(\w+)"\s*/>', block)
@@ -199,6 +212,14 @@ def apply_types_tuning(path, config, used):
                 lambda t: f"<restock>{max(int(t.group(1)), restock_min)}</restock>",
                 block,
             )
+        if min_multiplier is not None and min_multiplier != 1.0:
+            nominal = re.search(r"<nominal>(\d+)</nominal>", block)
+            if nominal and int(nominal.group(1)) > 0:  # leave disabled (nominal 0) types alone
+                block = re.sub(
+                    r"<min>(\d+)</min>",
+                    lambda t: f"<min>{scale_min(int(t.group(1)), min_multiplier)}</min>",
+                    block,
+                )
         return f'<type name="{name}">{block}</type>'
 
     content = re.sub(r'<type name="([^"]+)">(.*?)</type>', replace_type, content, flags=re.DOTALL)
