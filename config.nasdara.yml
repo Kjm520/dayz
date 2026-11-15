@@ -1,0 +1,36 @@
+# ============================================================
+# Nasdara overrides (dayzxb_missions/dayzOffline.nasdara)
+# Values here sit on top of config.yml for this mission only.
+# Keep map-specific things here: zone and event names, animals,
+# vehicles, coordinates. Universal tuning lives in config.yml.
+# ============================================================
+
+# --- Infected types (env/zombie_territories.xml + db/events.xml) ---
+
+# Per-type multipliers on top of INFECTED_GLOBAL_D_MULTIPLIER. 1.0 = follow the global.
+# Vanilla misspells the religious zones "InfedctedReligious"; those 31 zones match no
+# event name and are left exactly as shipped.
+InfectedVillage_D_MULTIPLIER: 1.0
+InfectedVillageTier1_D_MULTIPLIER: 1.0
+InfectedCity_D_MULTIPLIER: 1.0
+InfectedSolitude_D_MULTIPLIER: 1.0 # lone infected in the wild, 228 zones
+InfectedPolice_D_MULTIPLIER: 1.0
+InfectedPoliceHard_D_MULTIPLIER: 1.0
+InfectedMedic_D_MULTIPLIER: 1.0
+InfectedReligious_D_MULTIPLIER: 1.0
+InfectedFirefighter_D_MULTIPLIER: 1.0
+InfectedIndustrial_D_MULTIPLIER: 1.0
+InfectedArmy_D_MULTIPLIER: 1.0
+InfectedArmyION_D_MULTIPLIER: 1.0
+InfectedArmyConvoy_D_MULTIPLIER: 1.0
+InfectedNBCYellow_D_MULTIPLIER: 1.0
+
+# --- Animals (db/events.xml) ---
+
+# No wolves or bears on Nasdara (both events ship inactive). Wild dog packs are the predator.
+AnimalDog_D_MULTIPLIER: 1.5 # 8 packs -> 12. Nasdara's answer to Sakhal's wolves.
+
+# --- Vehicles (db/events.xml) ---
+
+# No boats here. Motorbikes are the fast travel and vanilla spawns 30 of them.
+VehicleMotorbike_D_MULTIPLIER: 0.5 # 30 -> 15

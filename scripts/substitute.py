@@ -1,7 +1,15 @@
 """
-Build step: reads config.yml, copies remote/ to dist/, and fills {{VAR}}
-placeholders. Then applies the density multipliers to every mission in dist/:
+Build step: reads the config layers, copies remote/ to dist/, fills {{VAR}}
+placeholders, then applies the density and loot tuning to every mission in dist/.
 
+Config layers:
+  * config.yml         values shared by every mission
+  * config.<map>.yml   overrides for one mission: config.sakhal.yml applies to
+                       dayzxb_missions/dayzOffline.sakhal (the part after the dot)
+  A mission sees the shared values with its own file's values on top. Files
+  outside a mission folder see only config.yml.
+
+Tuning applied per mission, keys looked up in that mission's merged config:
   * env/zombie_territories.xml  dmin/dmax           x INFECTED_GLOBAL_D_MULTIPLIER x <Zone>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Infected* events x INFECTED_GLOBAL_D_MULTIPLIER x <Event>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Animal* events   x ANIMAL_GLOBAL_D_MULTIPLIER   x <Event>_D_MULTIPLIER
@@ -22,8 +30,8 @@ Placeholder rules:
     is emitted bare (2.0, 400, true) so the output is correctly typed;
     anything else is emitted as a JSON string.
 
-Exits non-zero if any placeholder has no value in config.yml, so a broken
-build never reaches the server. Warns about config.yml variables nothing uses.
+Exits non-zero if any placeholder has no value, so a broken build never
+reaches the server. Warns about config variables nothing uses.
 """
 import glob
 import json
@@ -37,14 +45,51 @@ import sys
 import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_PATH = os.path.join(ROOT, "config.yml")
+BASE_CONFIG = os.path.join(ROOT, "config.yml")
 SRC_DIR = os.path.join(ROOT, "remote")
 DST_DIR = os.path.join(ROOT, "dist")
+MISSIONS_DIR = "dayzxb_missions"
 
 TEXT_EXTENSIONS = {".xml", ".json", ".cfg", ".txt", ".ini"}
 PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
 QUOTED_PLACEHOLDER = re.compile(r'"\{\{(\w+)\}\}"')
 IDENTIFIER = re.compile(r"^\w+$")
+
+
+class MissionConfig:
+    """Shared config with one mission's overrides on top.
+
+    Records which layer supplied each key that was actually applied, so the
+    build can warn about variables nothing uses.
+    """
+
+    def __init__(self, base, override=None, layer=None):
+        self.base = base
+        self.override = override or {}
+        self.layer = layer  # file name of the override layer, or None
+        self.used = set()   # (layer name, key)
+
+    def __contains__(self, key):
+        return key in self.override or key in self.base
+
+    def get(self, key, default=None):
+        if key in self.override:
+            self.used.add((self.layer, key))
+            return self.override[key]
+        if key in self.base:
+            self.used.add(("config.yml", key))
+            return self.base[key]
+        return default
+
+
+def load_yaml(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}
+
+
+def mission_key(folder):
+    """dayzOffline.sakhal -> sakhal"""
+    return folder.split(".", 1)[1] if "." in folder else folder
 
 
 def json_literal(value):
@@ -61,17 +106,16 @@ def json_literal(value):
     return json.dumps(text)
 
 
-def substitute_file(path, variables, used, missing):
+def substitute_file(path, config, missing):
     ext = os.path.splitext(path)[1].lower()
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
 
     def resolve(key):
-        if key not in variables:
+        if key not in config:
             missing.add((key, os.path.relpath(path, DST_DIR).replace(os.sep, "/")))
             return None
-        used.add(key)
-        return variables[key]
+        return config.get(key)
 
     if ext == ".json":
         def quoted(m):
@@ -88,7 +132,7 @@ def substitute_file(path, variables, used, missing):
         f.write(content)
 
 
-def multiplier_for(name, config, used):
+def multiplier_for(name, config):
     """Combined multiplier for a zone/event name: group global x per-name."""
     if name.startswith("Infected"):
         global_key = "INFECTED_GLOBAL_D_MULTIPLIER"
@@ -101,8 +145,7 @@ def multiplier_for(name, config, used):
     combined = 1.0
     for key in (global_key, f"{name}_D_MULTIPLIER"):
         if key in config:
-            used.add(key)
-            combined *= float(config[key])
+            combined *= float(config.get(key))
     return combined
 
 
@@ -116,7 +159,7 @@ def scale_min(value, multiplier):
     return 0 if value == 0 else max(1, math.floor(value * multiplier))
 
 
-def apply_territory_multipliers(path, config, used):
+def apply_territory_multipliers(path, config):
     if not os.path.exists(path):
         return
     with open(path, "r", encoding="utf-8") as f:
@@ -127,7 +170,7 @@ def apply_territory_multipliers(path, config, used):
         name_m = re.search(r'name="(\w+)"', tag)
         if not name_m:
             return tag
-        multiplier = multiplier_for(name_m.group(1), config, used)
+        multiplier = multiplier_for(name_m.group(1), config)
         if multiplier == 1.0:
             return tag
         return re.sub(
@@ -141,7 +184,7 @@ def apply_territory_multipliers(path, config, used):
         f.write(content)
 
 
-def apply_event_tuning(path, config, used):
+def apply_event_tuning(path, config):
     """Scale event counts by the multipliers and cap how much loot infected carry."""
     if not os.path.exists(path):
         return
@@ -150,12 +193,11 @@ def apply_event_tuning(path, config, used):
 
     loot_cap = config.get("INFECTED_LOOT_MAX")
     if loot_cap is not None:
-        used.add("INFECTED_LOOT_MAX")
         loot_cap = int(loot_cap)
 
     def replace_event(m):
         name, block = m.group(1), m.group(2)
-        multiplier = multiplier_for(name, config, used)
+        multiplier = multiplier_for(name, config)
         if multiplier != 1.0:
             block = re.sub(
                 r"<(nominal|min|max)>(\d+)</\1>",
@@ -175,8 +217,8 @@ def apply_event_tuning(path, config, used):
         f.write(content)
 
 
-def apply_types_tuning(path, config, used):
-    """Scale loot nominal/min per category and enforce a restock floor in types.xml."""
+def apply_types_tuning(path, config):
+    """Scale loot nominal/min per category, widen the min gap, and enforce a restock floor."""
     if not os.path.exists(path):
         return
     with open(path, "r", encoding="utf-8") as f:
@@ -184,12 +226,10 @@ def apply_types_tuning(path, config, used):
 
     restock_min = config.get("LOOT_RESTOCK_MIN")
     if restock_min is not None:
-        used.add("LOOT_RESTOCK_MIN")
         restock_min = int(restock_min)
 
     min_multiplier = config.get("LOOT_MIN_MULTIPLIER")
     if min_multiplier is not None:
-        used.add("LOOT_MIN_MULTIPLIER")
         min_multiplier = float(min_multiplier)
 
     def replace_type(m):
@@ -198,8 +238,7 @@ def apply_types_tuning(path, config, used):
         if category:
             key = f"LOOT_{category.group(1).upper()}_MULTIPLIER"
             if key in config:
-                used.add(key)
-                multiplier = float(config[key])
+                multiplier = float(config.get(key))
                 if multiplier != 1.0:
                     block = re.sub(
                         r"<(nominal|min)>(\d+)</\1>",
@@ -241,33 +280,72 @@ def reset_dist():
     shutil.copytree(SRC_DIR, DST_DIR, copy_function=shutil.copyfile)
 
 
+def load_configs():
+    """One MissionConfig per mission folder in dist/, plus the shared one for everything else."""
+    base = load_yaml(BASE_CONFIG)
+    shared = MissionConfig(base)
+    missions = {}
+    for mission_dir in sorted(glob.glob(os.path.join(DST_DIR, MISSIONS_DIR, "*"))):
+        if not any(files for _, _, files in os.walk(mission_dir)):
+            continue  # empty leftover folder, not a mission
+        folder = os.path.basename(mission_dir)
+        layer = f"config.{mission_key(folder)}.yml"
+        layer_path = os.path.join(ROOT, layer)
+        if os.path.exists(layer_path):
+            missions[folder] = MissionConfig(base, load_yaml(layer_path), layer)
+        else:
+            missions[folder] = MissionConfig(base)
+
+    known_keys = {mission_key(folder) for folder in missions}
+    for layer_path in sorted(glob.glob(os.path.join(ROOT, "config.*.yml"))):
+        key = os.path.basename(layer_path)[len("config."):-len(".yml")]
+        if key not in known_keys:
+            print(f"WARNING: {os.path.basename(layer_path)} has no matching mission under remote/{MISSIONS_DIR}/")
+    return shared, missions
+
+
+def config_for(path, shared, missions):
+    parts = os.path.relpath(path, DST_DIR).split(os.sep)
+    if len(parts) > 2 and parts[0] == MISSIONS_DIR and parts[1] in missions:
+        return missions[parts[1]]
+    return shared
+
+
 def main():
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f) or {}
-
     reset_dist()
+    shared, missions = load_configs()
 
-    used, missing = set(), set()
+    missing = set()
     for dirpath, _, filenames in os.walk(DST_DIR):
         for filename in filenames:
             if os.path.splitext(filename)[1].lower() in TEXT_EXTENSIONS:
-                substitute_file(os.path.join(dirpath, filename), config, used, missing)
+                path = os.path.join(dirpath, filename)
+                substitute_file(path, config_for(path, shared, missions), missing)
 
-    for mission in sorted(glob.glob(os.path.join(DST_DIR, "dayzxb_missions", "*"))):
-        apply_territory_multipliers(os.path.join(mission, "env", "zombie_territories.xml"), config, used)
-        apply_event_tuning(os.path.join(mission, "db", "events.xml"), config, used)
-        apply_types_tuning(os.path.join(mission, "db", "types.xml"), config, used)
+    for folder, config in missions.items():
+        mission = os.path.join(DST_DIR, MISSIONS_DIR, folder)
+        apply_territory_multipliers(os.path.join(mission, "env", "zombie_territories.xml"), config)
+        apply_event_tuning(os.path.join(mission, "db", "events.xml"), config)
+        apply_types_tuning(os.path.join(mission, "db", "types.xml"), config)
 
-    for key in sorted({k for k in config if IDENTIFIER.match(k)} - used):
-        print(f"WARNING: config.yml variable {key} is not used by anything in remote/")
+    used = set().union(shared.used, *(c.used for c in missions.values()))
+    for key in sorted(k for k in shared.base if IDENTIFIER.match(k)):
+        if ("config.yml", key) not in used:
+            print(f"WARNING: config.yml variable {key} is not used by anything (unused, or overridden in every mission)")
+    for folder, config in missions.items():
+        if config.layer is None:
+            continue
+        for key in sorted(k for k in config.override if IDENTIFIER.match(k)):
+            if (config.layer, key) not in used:
+                print(f"WARNING: {config.layer} variable {key} is not used by {folder}")
 
     if missing:
         for key, rel in sorted(missing):
-            print(f"ERROR: {{{{{key}}}}} in {rel} has no value in config.yml")
+            print(f"ERROR: {{{{{key}}}}} in {rel} has no value in its config")
         print(f"Build failed: {len(missing)} unresolved placeholder(s).")
         return 1
 
-    print(f"Built dist/ ({len(used)} variable(s) applied).")
+    print(f"Built dist/ ({len(used)} variable(s) applied across {len(missions)} mission(s)).")
     return 0
 
 

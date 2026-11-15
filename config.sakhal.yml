@@ -1,0 +1,48 @@
+# ============================================================
+# Sakhal overrides (dayzxb_missions/dayzOffline.sakhal)
+# Values here sit on top of config.yml for this mission only.
+# Keep map-specific things here: zone and event names, animals,
+# vehicles, coordinates. Universal tuning lives in config.yml.
+# ============================================================
+
+# --- Spawn Coordinates --- map: 15360 x 15360
+
+# cfgplayerspawnpoints.xml is vanilla (117 points). For testing, re-template it:
+# replace the <pos> entries with <pos x="{{SPAWN_X}}" z="{{SPAWN_Z}}" /> and the
+# <fresh> spawn_params min/max distances with {{MIN_DIST}}/{{MAX_DIST}}, then
+# uncomment these. Reference spots:
+#   Northeast Pier:     13915, 12525
+#   Petropavlovsk Pier:  5415, 10880
+#SPAWN_X: "13915"
+#SPAWN_Z: "12525"
+#MIN_DIST: "0"
+#MAX_DIST: "400"
+
+# --- Infected types (env/zombie_territories.xml + db/events.xml) ---
+
+# Per-type multipliers on top of INFECTED_GLOBAL_D_MULTIPLIER. 1.0 = follow the global.
+InfectedCityTier1_D_MULTIPLIER: 1.0
+InfectedVillage_D_MULTIPLIER: 1.0
+InfectedArmy_D_MULTIPLIER: 1.0
+InfectedFirefighter_D_MULTIPLIER: 1.0
+InfectedScientist_D_MULTIPLIER: 1.0
+InfectedIndustrial_D_MULTIPLIER: 1.0
+InfectedPrisoner_D_MULTIPLIER: 1.0
+InfectedReligious_D_MULTIPLIER: 1.0
+InfectedMedic_D_MULTIPLIER: 1.0
+InfectedArmyHeavy_D_MULTIPLIER: 1.0
+InfectedVillageTier1_D_MULTIPLIER: 1.0
+InfectedPoliceHard_D_MULTIPLIER: 1.0
+InfectedCity_D_MULTIPLIER: 1.0
+
+# --- Animals (db/events.xml) ---
+
+# Pack counts. Pack size lives in events.xml <children>.
+AnimalWolf_D_MULTIPLIER: 1.5 # 8 packs -> 12. Wolves are the real solo threat on Sakhal.
+AnimalBear_D_MULTIPLIER: 1.0 # Default: 5
+
+# --- Vehicles (db/events.xml) ---
+
+# Fewer boats makes Sakhal a big map again.
+VehicleBoat_D_MULTIPLIER: 0.5 # Default: 14 civilian boats -> 7
+VehicleMilitaryBoat_D_MULTIPLIER: 0.5 # Default: 8 military boats -> 4
