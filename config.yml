@@ -6,16 +6,16 @@
 
 # --- Spawn Coordinates (Sakhal) --- map: 15360 x 15360
 
-Northeast Pier: ["13915", "12525"]
-Petropavlovsk Pier: ["5415", "10880"]
-
-SPAWN_X: "13915"
-SPAWN_Z: "12525"
-
-# --- Spawn Parameters (Sakhal) ---
-
-MIN_DIST: "0"
-MAX_DIST: "400"
+# cfgplayerspawnpoints.xml is vanilla (117 points). For testing, re-template it:
+# replace the <pos> entries with <pos x="{{SPAWN_X}}" z="{{SPAWN_Z}}" /> and the
+# <fresh> spawn_params min/max distances with {{MIN_DIST}}/{{MAX_DIST}}, then
+# uncomment these. Reference spots:
+#   Northeast Pier:     13915, 12525
+#   Petropavlovsk Pier:  5415, 10880
+#SPAWN_X: "13915"
+#SPAWN_Z: "12525"
+#MIN_DIST: "0"
+#MAX_DIST: "400"
 
 # --- Infected Spawn Parameters (Sakhal) (Defaults varied so most common is listed below) ---
 
@@ -45,6 +45,53 @@ InfectedArmyHeavy_D_MULTIPLIER: 1.0
 InfectedVillageTier1_D_MULTIPLIER: 1.0
 InfectedPoliceHard_D_MULTIPLIER: 1.0
 InfectedCity_D_MULTIPLIER: 1.0
+
+# --- Animals (db/events.xml) ---
+
+# Same scheme as infected: final = nominal/min/max * ANIMAL_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
+# Wolf and bear counts are packs. Pack size lives in events.xml <children>.
+ANIMAL_GLOBAL_D_MULTIPLIER: 1.0
+
+AnimalWolf_D_MULTIPLIER: 1.5 # 8 packs -> 12. Wolves are the real solo threat on Sakhal.
+AnimalBear_D_MULTIPLIER: 1.0 # Default: 5
+
+# --- Vehicles (db/events.xml) ---
+
+# Same scheme. Fewer boats makes Sakhal a big map again.
+VEHICLE_GLOBAL_D_MULTIPLIER: 1.0
+
+VehicleBoat_D_MULTIPLIER: 0.5 # Default: 14 civilian boats -> 7
+VehicleMilitaryBoat_D_MULTIPLIER: 0.5 # Default: 8 military boats -> 4
+
+# --- Loot (db/types.xml) ---
+
+# Scales nominal and min for every item in that types.xml category (rounds up, never to zero).
+# Categories on Sakhal: food, tools, weapons, clothes, containers, explosives, lootdispatch.
+LOOT_FOOD_MULTIPLIER: 0.5
+LOOT_TOOLS_MULTIPLIER: 0.7
+
+# Minimum restock delay in seconds. Vanilla is 0 for most items, so a looted town
+# refills as soon as it drops under min. One hour keeps a cleared town cleared.
+LOOT_RESTOCK_MIN: 3600
+
+# Most items an infected can carry. Vanilla is 5 for nearly every type.
+INFECTED_LOOT_MAX: 2
+
+# --- Economy Globals (db/globals.xml) ---
+
+ANIMAL_MAX_COUNT: "500" # Default: 200 - cap on living animals map-wide
+CLEANUP_DEAD_INFECTED: "1200" # Default: 330 - seconds a dead infected stays
+CLEANUP_DEAD_PLAYER: "7200" # Default: 3600 - seconds your body (and gear) stays for a recovery run
+LOOT_DAMAGE_MAX: "0.70" # Default: 0.82 - most damage loot can spawn with (0 = pristine)
+TIME_LOGIN: "3" # Default: 15 - login timer, seconds
+TIME_LOGOUT: "3" # Default: 15 - logout timer, seconds
+TIME_PENALTY: "10" # Default: 20 - extra wait after a combat or forced disconnect
+
+# --- Solo QoL (cfggameplay.json) ---
+
+# Shock regenerates at this rate per second while unconscious. Solo, nobody is
+# going to wake you, so 1.0 means minutes of staring at black. 2.0 halves it.
+SHOCK_REFILL_UNCONSCIOUS: 2.0 # Default: 1.0
 
 
 

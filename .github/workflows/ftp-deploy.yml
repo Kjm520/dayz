@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # manual run from the Actions tab, e.g. to test new FTP secrets
 
 permissions:
   contents: read
@@ -28,10 +29,14 @@ jobs:
       - name: Substitute variables
         run: python scripts/substitute.py
 
+      - name: Validate build
+        run: python scripts/validate.py
+
       - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
-          server: ${{ secrets.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}      # bare IP or hostname, no port
+          port: ${{ secrets.FTP_PORT }}        # optional; defaults to 21 when the secret is unset
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
