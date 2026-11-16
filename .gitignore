@@ -3,5 +3,6 @@
 DEFAULT/
 .tools/
 dist/
+nitrado-logs/
 
 

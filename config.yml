@@ -42,8 +42,8 @@ LOOT_TOOLS_MULTIPLIER: 0.7
 # Scales min ONLY, for every spawning type, after the category multiplier above.
 # A wider gap between min and nominal lets the map empty further before the CE
 # restocks anything, so a looted town stays looted and you travel.
-# Rounds DOWN, never below 1, so small thresholds actually move: min 3 -> 2, min 20 -> 17.
-LOOT_MIN_MULTIPLIER: 0.85
+# Rounds DOWN, never below 1, so small thresholds actually move: min 3 -> 2, min 20 -> 16.
+LOOT_MIN_MULTIPLIER: 0.8
 
 # Minimum restock delay in seconds. Vanilla is 0 for most items, so a type
 # refills as soon as it drops under min. One hour slows the map-wide top-up.
