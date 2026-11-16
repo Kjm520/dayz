@@ -525,6 +525,7 @@
             <child lootmax="5" lootmin="0" max="0" min="7" type="ZmbM_ParamedicNormal_Green"/>
             <child lootmax="5" lootmin="0" max="0" min="7" type="ZmbM_ParamedicNormal_Red"/>
             <child lootmax="5" lootmin="0" max="0" min="7" type="ZmbM_PatientSkinny"/>
+            <child lootmax="2" lootmin="0" max="0" min="200" type="ZmbM_Mummy"/>
         </children>
     </event>
     <event name="InfectedNBC">

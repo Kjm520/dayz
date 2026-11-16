@@ -16,7 +16,8 @@ InfectedCity_D_MULTIPLIER: 1.0
 InfectedSolitude_D_MULTIPLIER: 1.0 # lone infected in the wild, 228 zones
 InfectedPolice_D_MULTIPLIER: 1.0
 InfectedPoliceHard_D_MULTIPLIER: 1.0
-InfectedMedic_D_MULTIPLIER: 1.0
+# TEST: 2.0 here x 2.0 global = 4x vanilla at hospitals, so the Mummy test is unmissable. Dial back after.
+InfectedMedic_D_MULTIPLIER: 2.0
 InfectedReligious_D_MULTIPLIER: 1.0
 InfectedFirefighter_D_MULTIPLIER: 1.0
 InfectedIndustrial_D_MULTIPLIER: 1.0
