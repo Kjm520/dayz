@@ -13,6 +13,9 @@ Warnings (printed, deploy continues):
     dist/ (the server may already have them; they are just not managed here)
   * a types.xml entry that spawns (nominal > 0) has min greater than nominal
     (vanilla ships one of these, so it cannot be an error)
+  * an events.xml event with <limit>custom</limit> has child percentages that
+    run past 100, so the children after that point never spawn
+    (vanilla Nasdara ships InfectedCity this way, so it cannot be an error)
 """
 import glob
 import json
@@ -126,6 +129,38 @@ def check_types(mission, warnings):
             warnings.append(f"{rel(path)}: type {t.get('name')} has min {minimum} > nominal {nominal}")
 
 
+def check_event_children(mission, warnings):
+    """Flag children of a custom-limit event that can never spawn.
+
+    In a <limit>custom</limit> event (every infected event) a child's min is the
+    percent of the event's spawn budget it receives. The CE hands the budget out
+    in file order, so once earlier children have claimed 100 percent, every child
+    after that point is allotted zero pieces and never appears. The server RPT
+    shows the result in its "Scaling Spawner" block as "min: 0, max: 0".
+    """
+    path = os.path.join(mission, "db", "events.xml")
+    if not os.path.exists(path):
+        return
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError:
+        return  # already reported
+    for event in root.findall("event"):
+        if event.findtext("limit") != "custom":
+            continue
+        claimed = 0
+        starved = []
+        for child in event.findall("children/child"):
+            if claimed >= 100:
+                starved.append(child.get("type"))
+            claimed += int(child.get("min") or 0)
+        if starved:
+            warnings.append(
+                f"{rel(path)}: event {event.get('name')} child percentages total {claimed}; "
+                f"these come after the 100 mark and never spawn: {', '.join(starved)}"
+            )
+
+
 def check_referenced_files(mission, warnings):
     env = os.path.join(mission, "cfgenvironment.xml")
     if os.path.exists(env):
@@ -160,6 +195,7 @@ def main():
     for mission in sorted(glob.glob(os.path.join(DIST_DIR, "dayzxb_missions", "*"))):
         check_loadouts(mission, errors)
         check_types(mission, warnings)
+        check_event_children(mission, warnings)
         check_referenced_files(mission, warnings)
 
     for w in warnings:

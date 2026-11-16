@@ -19,7 +19,7 @@ Set your repo's secrets for "FTP_HOST", "FTP_PASSWORD", and "FTP_USERNAME" to th
 
 Config is layered. `config.yml` holds values shared by every map. `config.<map>.yml` holds one map's own values, named after the part of the mission folder after the dot, so `config.sakhal.yml` applies to `dayzOffline.sakhal`. A mission sees the shared file with its own file on top; the same key in both means the map file wins. Map-specific things (zone and event names, animals, vehicles, coordinates) belong in the map file; tuning you want everywhere belongs in the shared one.
 
-The GitHub Action runs both scripts on every push to main, then FTPs `dist/` to Nitrado. A placeholder with no value, an XML/JSON file that does not parse, or a loadout naming an item class that is not in types.xml fails the build and nothing is uploaded. Variables in any config file that nothing uses are warned about (typo catcher).
+The GitHub Action runs both scripts on every push to main, then FTPs `dist/` to Nitrado. A placeholder with no value, an XML/JSON file that does not parse, or a loadout naming an item class that is not in types.xml fails the build and nothing is uploaded. Variables in any config file that nothing uses are warned about (typo catcher). So are event children that can never spawn: in a `<limit>custom</limit>` event (every infected event) a child's `min` is its percent of the event's spawn budget, handed out in file order, so once the running total reaches 100 every child after it gets nothing.
 
 In JSON files write placeholders as strings, `"{{VAR}}"`, so the source stays valid JSON. Numbers and booleans come out bare in dist/.
 
@@ -51,7 +51,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Map shows player position.
     - Spawn points: the 60 vanilla points, with group rotation turned off. Vanilla ships them as a single group with rotation on, which has nothing to rotate to.
     - Ships the six animal territory files cfgenvironment.xml references but the Nitrado install lacks (sheep, goat, mouflon, fox, monitor lizard, dogs), taken from Bohemia's 1.30 mission files. Without them those animals have nowhere to spawn.
-    - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added to the InfectedMedic and InfectedArmy events in db/events.xml. TEST SETTINGS: Mummy weight is 2x the sum of each event's other children (about two in three spawns), and InfectedMedic_D_MULTIPLIER is 2.0 in config.nasdara.yml. Scale back once confirmed.
+    - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added as the first child of the InfectedMedic and InfectedArmy events in db/events.xml. Child `min` values are percent shares that must total 100, so the vanilla types were squeezed to make room. Mummy is 16 percent at army zones and 10 percent at hospitals, about one per small zone and three at a large base.
 
 ### Sakhal (`dayzOffline.sakhal`) - kept for switching back
 
