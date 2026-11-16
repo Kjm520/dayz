@@ -316,6 +316,7 @@
             <child lootmax="5" lootmin="0" max="0" min="10" type="ZmbM_takiSoldier_Officer"/>
             <child lootmax="5" lootmin="0" max="0" min="10" type="ZmbM_usSoldier_Officer_Desert"/>
             <child lootmax="5" lootmin="0" max="0" min="20" type="ZmbM_usSoldier_normal_Desert"/>
+            <child lootmax="2" lootmin="0" max="0" min="200" type="ZmbM_Mummy"/>
         </children>
     </event>
     <event name="InfectedArmyConvoy">

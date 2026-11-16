@@ -51,7 +51,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Map shows player position.
     - Spawn points: the 60 vanilla points, with group rotation turned off. Vanilla ships them as a single group with rotation on, which has nothing to rotate to.
     - Ships the six animal territory files cfgenvironment.xml references but the Nitrado install lacks (sheep, goat, mouflon, fox, monitor lizard, dogs), taken from Bohemia's 1.30 mission files. Without them those animals have nowhere to spawn.
-    - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added to the InfectedMedic event in db/events.xml. TEST SETTINGS: weight 200 vs 100 for all other medic types, and InfectedMedic_D_MULTIPLIER 2.0 in config.nasdara.yml. Scale both back once confirmed.
+    - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added to the InfectedMedic and InfectedArmy events in db/events.xml. TEST SETTINGS: Mummy weight is 2x the sum of each event's other children (about two in three spawns), and InfectedMedic_D_MULTIPLIER is 2.0 in config.nasdara.yml. Scale back once confirmed.
 
 ### Sakhal (`dayzOffline.sakhal`) - kept for switching back
 
