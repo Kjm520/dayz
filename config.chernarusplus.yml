@@ -1,0 +1,100 @@
+# ============================================================
+# Chernarus (dayzxb_missions/dayzOffline.chernarusplus)
+# PARKED: there is no remote/ mission for this map yet, so the
+# build ignores this file. It starts from the live maps' tuning
+# with Chernarus's own event names, ready for a switch.
+# The complete config for this map. Nothing is shared between
+# maps: map size and landscape change what even the global
+# multipliers should be, so every value this mission needs
+# lives here. Use {{VAR_NAME}} as the placeholder under remote/.
+# ============================================================
+
+# --- Spawn Coordinates --- map: 15360 x 15360
+
+# cfgplayerspawnpoints.xml is vanilla. For testing, re-template it as described
+# in config.sakhal.yml, then uncomment these.
+#SPAWN_X: "0"
+#SPAWN_Z: "0"
+#MIN_DIST: "0"
+#MAX_DIST: "400"
+
+# --- Infected (env/zombie_territories.xml + db/events.xml) ---
+
+# Final value = dmin/dmax (and event nominal/min/max) * INFECTED_GLOBAL_D_MULTIPLIER * <Type>_D_MULTIPLIER
+# Zero values in the XML are always preserved.
+INFECTED_GLOBAL_D_MULTIPLIER: 2.0
+
+# Most items an infected can carry. Vanilla is 5 for nearly every type.
+INFECTED_LOOT_MAX: 2
+
+# Per-event spawn parameters, for reference (edit events.xml directly if needed):
+#   lifetime 3, restock 0, saferadius 100, distanceradius 50, cleanupradius 100
+
+# Per-type multipliers on top of the global. 1.0 = follow the global.
+# Every type below has zones in zombie_territories.xml. InfectedArmyDesert and
+# InfectedPoliceHard only exist as events (spawned by static events), so they
+# are not listed. Zone counts from Bohemia's 1.30 files.
+InfectedVillage_D_MULTIPLIER: 1.0 # 190 zones
+InfectedVillageTier1_D_MULTIPLIER: 1.0 # 85 zones
+InfectedCity_D_MULTIPLIER: 1.0 # 36 zones
+InfectedCityTier1_D_MULTIPLIER: 1.0 # 90 zones
+InfectedSolitude_D_MULTIPLIER: 1.0 # lone infected in the wild, 153 zones
+InfectedPolice_D_MULTIPLIER: 1.0 # 21 zones
+InfectedMedic_D_MULTIPLIER: 1.0 # 23 zones
+InfectedReligious_D_MULTIPLIER: 1.0 # 35 zones
+InfectedFirefighter_D_MULTIPLIER: 1.0 # 9 zones
+InfectedIndustrial_D_MULTIPLIER: 1.0 # 65 zones
+InfectedPrisoner_D_MULTIPLIER: 1.0 # 2 zones
+InfectedArmy_D_MULTIPLIER: 1.0 # 33 zones
+InfectedArmyHard_D_MULTIPLIER: 1.0 # 16 zones
+InfectedNBC_D_MULTIPLIER: 1.0 # 4 zones
+
+# --- Animals (db/events.xml) ---
+
+# Same scheme: final = nominal/min/max * ANIMAL_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
+ANIMAL_GLOBAL_D_MULTIPLIER: 1.0
+
+# Pack counts. Pack size lives in events.xml <children>.
+AnimalWolf_D_MULTIPLIER: 1.0 # Default: 8 packs
+AnimalBear_D_MULTIPLIER: 1.0 # Default: 0 in the shipped file. Zero stays zero; raise nominal in events.xml to enable.
+
+# --- Vehicles (db/events.xml) ---
+
+# Same scheme: final = nominal/min/max * VEHICLE_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
+VEHICLE_GLOBAL_D_MULTIPLIER: 1.0
+
+VehicleBoat_D_MULTIPLIER: 1.0 # Default: 17 boats
+VehicleMotorbike_D_MULTIPLIER: 1.0 # Default: 25 motorbikes
+
+# --- Loot (db/types.xml) ---
+
+# Scales nominal and min for every item in that types.xml category (rounds up, never to zero).
+# Categories: food, tools, weapons, clothes, containers, explosives, lootdispatch.
+LOOT_FOOD_MULTIPLIER: 0.5
+LOOT_TOOLS_MULTIPLIER: 0.7
+
+# Scales min ONLY, for every spawning type, after the category multiplier above.
+# A wider gap between min and nominal lets the map empty further before the CE
+# restocks anything, so a looted town stays looted and you travel.
+# Rounds DOWN, never below 1, so small thresholds actually move: min 3 -> 2, min 20 -> 16.
+LOOT_MIN_MULTIPLIER: 0.8
+
+# Minimum restock delay in seconds. Vanilla is 0 for most items, so a type
+# refills as soon as it drops under min. One hour slows the map-wide top-up.
+LOOT_RESTOCK_MIN: 3600
+
+# --- Economy Globals (db/globals.xml) ---
+
+ANIMAL_MAX_COUNT: "500" # Default: 200 - cap on living animals map-wide
+CLEANUP_DEAD_INFECTED: "1200" # Default: 330 - seconds a dead infected stays
+CLEANUP_DEAD_PLAYER: "7200" # Default: 3600 - seconds your body (and gear) stays for a recovery run
+LOOT_DAMAGE_MAX: "0.70" # Default: 0.82 - most damage loot can spawn with (0 = pristine)
+TIME_LOGIN: "3" # Default: 15 - login timer, seconds
+TIME_LOGOUT: "3" # Default: 15 - logout timer, seconds
+TIME_PENALTY: "10" # Default: 20 - extra wait after a combat or forced disconnect
+
+# --- Solo QoL (cfggameplay.json) ---
+
+# Shock regenerates at this rate per second while unconscious. Solo, nobody is
+# going to wake you, so 1.0 means minutes of staring at black. 2.0 halves it.
+SHOCK_REFILL_UNCONSCIOUS: 2.0 # Default: 1.0

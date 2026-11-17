@@ -1,15 +1,18 @@
 """
-Build step: reads the config layers, copies remote/ to dist/, fills {{VAR}}
+Build step: reads each map's config, copies remote/ to dist/, fills {{VAR}}
 placeholders, then applies the density and loot tuning to every mission in dist/.
 
-Config layers:
-  * config.yml         values shared by every mission
-  * config.<map>.yml   overrides for one mission: config.sakhal.yml applies to
-                       dayzxb_missions/dayzOffline.sakhal (the part after the dot)
-  A mission sees the shared values with its own file's values on top. Files
-  outside a mission folder see only config.yml.
+Config:
+  * config.<map>.yml   the complete config for one mission: config.sakhal.yml
+                       applies to dayzxb_missions/dayzOffline.sakhal (the part
+                       after the dot). Nothing is shared between maps. A mission
+                       folder without a config file fails the build, and a file
+                       outside every mission folder cannot carry placeholders.
+                       A config for an official map with no mission folder is
+                       parked (kept for a later switch) and ignored; any other
+                       unmatched config is warned about as a likely typo.
 
-Tuning applied per mission, keys looked up in that mission's merged config:
+Tuning applied per mission, keys looked up in that mission's config:
   * env/zombie_territories.xml  dmin/dmax           x INFECTED_GLOBAL_D_MULTIPLIER x <Zone>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Infected* events x INFECTED_GLOBAL_D_MULTIPLIER x <Event>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Animal* events   x ANIMAL_GLOBAL_D_MULTIPLIER   x <Event>_D_MULTIPLIER
@@ -45,10 +48,12 @@ import sys
 import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_CONFIG = os.path.join(ROOT, "config.yml")
 SRC_DIR = os.path.join(ROOT, "remote")
 DST_DIR = os.path.join(ROOT, "dist")
 MISSIONS_DIR = "dayzxb_missions"
+# The console maps. A config.<map>.yml for one of these with no mission folder is
+# parked for a later switch, not a typo.
+MAPS = {"chernarusplus", "enoch", "sakhal", "nasdara"}
 
 TEXT_EXTENSIONS = {".xml", ".json", ".cfg", ".txt", ".ini"}
 PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
@@ -57,28 +62,24 @@ IDENTIFIER = re.compile(r"^\w+$")
 
 
 class MissionConfig:
-    """Shared config with one mission's overrides on top.
+    """One mission's config.
 
-    Records which layer supplied each key that was actually applied, so the
-    build can warn about variables nothing uses.
+    Records which keys were actually applied, so the build can warn about
+    variables nothing uses.
     """
 
-    def __init__(self, base, override=None, layer=None):
-        self.base = base
-        self.override = override or {}
-        self.layer = layer  # file name of the override layer, or None
-        self.used = set()   # (layer name, key)
+    def __init__(self, name, values):
+        self.name = name      # config file name, for messages
+        self.values = values
+        self.used = set()
 
     def __contains__(self, key):
-        return key in self.override or key in self.base
+        return key in self.values
 
     def get(self, key, default=None):
-        if key in self.override:
-            self.used.add((self.layer, key))
-            return self.override[key]
-        if key in self.base:
-            self.used.add(("config.yml", key))
-            return self.base[key]
+        if key in self.values:
+            self.used.add(key)
+            return self.values[key]
         return default
 
 
@@ -107,13 +108,15 @@ def json_literal(value):
 
 
 def substitute_file(path, config, missing):
+    """Fill placeholders from config (None outside a mission folder); unresolved ones go in missing."""
     ext = os.path.splitext(path)[1].lower()
+    rel = os.path.relpath(path, DST_DIR).replace(os.sep, "/")
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
 
     def resolve(key):
-        if key not in config:
-            missing.add((key, os.path.relpath(path, DST_DIR).replace(os.sep, "/")))
+        if config is None or key not in config:
+            missing.add((rel, key, config.name if config else None))
             return None
         return config.get(key)
 
@@ -281,46 +284,50 @@ def reset_dist():
 
 
 def load_configs():
-    """One MissionConfig per mission folder in dist/, plus the shared one for everything else."""
-    base = load_yaml(BASE_CONFIG)
-    shared = MissionConfig(base)
-    missions = {}
+    """One MissionConfig per non-empty mission folder in dist/. Returns (missions, errors)."""
+    missions, errors = {}, []
     for mission_dir in sorted(glob.glob(os.path.join(DST_DIR, MISSIONS_DIR, "*"))):
         if not any(files for _, _, files in os.walk(mission_dir)):
             continue  # empty leftover folder, not a mission
         folder = os.path.basename(mission_dir)
-        layer = f"config.{mission_key(folder)}.yml"
-        layer_path = os.path.join(ROOT, layer)
-        if os.path.exists(layer_path):
-            missions[folder] = MissionConfig(base, load_yaml(layer_path), layer)
-        else:
-            missions[folder] = MissionConfig(base)
+        name = f"config.{mission_key(folder)}.yml"
+        path = os.path.join(ROOT, name)
+        if not os.path.exists(path):
+            errors.append(f"remote/{MISSIONS_DIR}/{folder} has no {name}")
+            continue
+        missions[folder] = MissionConfig(name, load_yaml(path))
 
     known_keys = {mission_key(folder) for folder in missions}
-    for layer_path in sorted(glob.glob(os.path.join(ROOT, "config.*.yml"))):
-        key = os.path.basename(layer_path)[len("config."):-len(".yml")]
-        if key not in known_keys:
-            print(f"WARNING: {os.path.basename(layer_path)} has no matching mission under remote/{MISSIONS_DIR}/")
-    return shared, missions
+    for path in sorted(glob.glob(os.path.join(ROOT, "config.*.yml"))):
+        key = os.path.basename(path)[len("config."):-len(".yml")]
+        if key not in known_keys and key not in MAPS:
+            print(f"WARNING: {os.path.basename(path)} matches no mission under remote/{MISSIONS_DIR}/ and no known map")
+    return missions, errors
 
 
-def config_for(path, shared, missions):
+def config_for(path, missions):
+    """The config of the mission a dist/ file belongs to, or None outside every mission folder."""
     parts = os.path.relpath(path, DST_DIR).split(os.sep)
-    if len(parts) > 2 and parts[0] == MISSIONS_DIR and parts[1] in missions:
-        return missions[parts[1]]
-    return shared
+    if len(parts) > 2 and parts[0] == MISSIONS_DIR:
+        return missions.get(parts[1])
+    return None
 
 
 def main():
     reset_dist()
-    shared, missions = load_configs()
+    missions, errors = load_configs()
+    if errors:
+        for e in errors:
+            print(f"ERROR: {e}")
+        print(f"Build failed: {len(errors)} mission(s) without a config file.")
+        return 1
 
     missing = set()
     for dirpath, _, filenames in os.walk(DST_DIR):
         for filename in filenames:
             if os.path.splitext(filename)[1].lower() in TEXT_EXTENSIONS:
                 path = os.path.join(dirpath, filename)
-                substitute_file(path, config_for(path, shared, missions), missing)
+                substitute_file(path, config_for(path, missions), missing)
 
     for folder, config in missions.items():
         mission = os.path.join(DST_DIR, MISSIONS_DIR, folder)
@@ -328,24 +335,21 @@ def main():
         apply_event_tuning(os.path.join(mission, "db", "events.xml"), config)
         apply_types_tuning(os.path.join(mission, "db", "types.xml"), config)
 
-    used = set().union(shared.used, *(c.used for c in missions.values()))
-    for key in sorted(k for k in shared.base if IDENTIFIER.match(k)):
-        if ("config.yml", key) not in used:
-            print(f"WARNING: config.yml variable {key} is not used by anything (unused, or overridden in every mission)")
+    applied = 0
     for folder, config in missions.items():
-        if config.layer is None:
-            continue
-        for key in sorted(k for k in config.override if IDENTIFIER.match(k)):
-            if (config.layer, key) not in used:
-                print(f"WARNING: {config.layer} variable {key} is not used by {folder}")
+        applied += len(config.used)
+        for key in sorted(k for k in config.values if IDENTIFIER.match(k)):
+            if key not in config.used:
+                print(f"WARNING: {config.name} variable {key} is not used by {folder}")
 
     if missing:
-        for key, rel in sorted(missing):
-            print(f"ERROR: {{{{{key}}}}} in {rel} has no value in its config")
+        for rel, key, config_name in sorted(missing):
+            where = f"has no value in {config_name}" if config_name else "is outside every mission folder, where no config applies"
+            print(f"ERROR: {{{{{key}}}}} in {rel} {where}")
         print(f"Build failed: {len(missing)} unresolved placeholder(s).")
         return 1
 
-    print(f"Built dist/ ({len(used)} variable(s) applied across {len(missions)} mission(s)).")
+    print(f"Built dist/ ({applied} variable(s) applied across {len(missions)} mission(s)).")
     return 0
 
 

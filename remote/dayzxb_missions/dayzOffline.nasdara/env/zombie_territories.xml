@@ -709,4 +709,69 @@
         <zone name="InfectedArmyION" smin="0" smax="0" dmin="8" dmax="12" x="8300.44" z="5752.89" r="100"/>
         <zone name="InfectedArmyION" smin="0" smax="0" dmin="2" dmax="4" x="10570.7" z="6144" r="50"/>
     </territory>
+    <!-- InfectedMummy: one Mummy at each of 30 isolated structures. Each sits at least
+         300 m (the zone activation distance) from every other infected zone, so nothing
+         else spawns while you are there, and at least 900 m from the next one. -->
+    <territory color="4288512000">
+        <!-- Land_House_1M1, 2.6 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="15121.63" z="4566.29" r="50"/>
+        <!-- Land_Tunnel_Single_Bunker, 1.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="2873.95" z="15817.74" r="50"/>
+        <!-- Land_Shed_Closed_Small1, 1.2 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11783.93" z="5184.45" r="50"/>
+        <!-- Land_Shed_Closed_Small2, 1.0 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="12596.24" z="5626.73" r="50"/>
+        <!-- Land_TradTent_Medium1, 1.0 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="13141.64" z="14083.78" r="50"/>
+        <!-- Land_Slum_House4, 0.8 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11620.10" z="13200.54" r="50"/>
+        <!-- Land_Boat_Small1, 0.6 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11628.39" z="3314.18" r="50"/>
+        <!-- Land_Garage_Row_Small, 0.6 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="10692.64" z="4981.05" r="50"/>
+        <!-- Land_HBarrierTower_TK, 0.6 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="4421.44" z="4730.24" r="50"/>
+        <!-- Land_TradTent_Medium1, 0.6 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="3029.35" z="14717.39" r="50"/>
+        <!-- Land_TradTent_Small, 0.5 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11095.80" z="14593.21" r="50"/>
+        <!-- Land_Workshop4, 0.5 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="9961.09" z="7261.24" r="50"/>
+        <!-- Land_Oil_DrillTower, 0.5 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="12288.28" z="6921.88" r="50"/>
+        <!-- Land_Misc_WoodenCrate_Spawn, 0.5 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="12661.47" z="1965.87" r="50"/>
+        <!-- Land_Oil_DrillTower, 0.5 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="10793.53" z="6862.38" r="50"/>
+        <!-- Land_House_1M2, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="12283.93" z="12081.34" r="50"/>
+        <!-- Land_House_1M5, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="2720.66" z="12601.70" r="50"/>
+        <!-- Land_Container_1Moh_Desert, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="3132.77" z="9796.71" r="50"/>
+        <!-- Land_Slum_House3, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="9376.79" z="5953.67" r="50"/>
+        <!-- Land_House_1M1, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="8820.49" z="2985.12" r="50"/>
+        <!-- Land_Workshop3, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="2558.63" z="5502.84" r="50"/>
+        <!-- Land_Slum_House4, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="10747.94" z="12853.52" r="50"/>
+        <!-- Land_TradTent_Small, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11830.70" z="8742.67" r="50"/>
+        <!-- Land_Shed_W1, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="5087.52" z="12433.84" r="50"/>
+        <!-- Land_House_2M2_Dam2, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="6150.22" z="11240.22" r="50"/>
+        <!-- Land_Guardhouse, 0.4 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11336.10" z="4260.78" r="50"/>
+        <!-- Land_Shed_W3, 0.3 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="4429.84" z="13854.70" r="50"/>
+        <!-- Land_House_1M2_Dam2, 0.3 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="14339.07" z="13779.09" r="50"/>
+        <!-- Land_Shed_W2, 0.3 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="7404.16" z="6880.57" r="50"/>
+        <!-- Land_Workshop1, 0.3 km from the nearest other zone -->
+        <zone name="InfectedMummy" smin="0" smax="0" dmin="1" dmax="1" x="11829.02" z="11231.89" r="50"/>
+    </territory>
 </territory-type>

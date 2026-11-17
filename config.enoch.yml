@@ -1,18 +1,27 @@
 # ============================================================
-# DayZ Server Configuration Variables (shared by every mission)
-# These values are substituted into the files under remote/
-# before deployment. Use {{VAR_NAME}} as the placeholder.
-#
-# Map-specific values live in config.<map>.yml, e.g. config.sakhal.yml
-# for dayzxb_missions/dayzOffline.sakhal. A mission sees this file
-# with its own file's values on top, so the same key in both means
-# the mission file wins.
+# Livonia (dayzxb_missions/dayzOffline.enoch)
+# PARKED: there is no remote/ mission for this map yet, so the
+# build ignores this file. It starts from the live maps' tuning
+# with Livonia's own event names, ready for a switch.
+# The complete config for this map. Nothing is shared between
+# maps: map size and landscape change what even the global
+# multipliers should be, so every value this mission needs
+# lives here. Use {{VAR_NAME}} as the placeholder under remote/.
 # ============================================================
+
+# --- Spawn Coordinates --- map: 12800 x 12800
+
+# cfgplayerspawnpoints.xml is vanilla. For testing, re-template it as described
+# in config.sakhal.yml, then uncomment these.
+#SPAWN_X: "0"
+#SPAWN_Z: "0"
+#MIN_DIST: "0"
+#MAX_DIST: "400"
 
 # --- Infected (env/zombie_territories.xml + db/events.xml) ---
 
 # Final value = dmin/dmax (and event nominal/min/max) * INFECTED_GLOBAL_D_MULTIPLIER * <Type>_D_MULTIPLIER
-# Per-type keys are map-specific and live in config.<map>.yml. Zero values in the XML are always preserved.
+# Zero values in the XML are always preserved.
 INFECTED_GLOBAL_D_MULTIPLIER: 2.0
 
 # Most items an infected can carry. Vanilla is 5 for nearly every type.
@@ -21,16 +30,39 @@ INFECTED_LOOT_MAX: 2
 # Per-event spawn parameters, for reference (edit events.xml directly if needed):
 #   lifetime 3, restock 0, saferadius 100, distanceradius 50, cleanupradius 100
 
+# Per-type multipliers on top of the global. 1.0 = follow the global.
+# Every type below has zones in zombie_territories.xml. InfectedArmyConvoy only
+# exists as an event (spawned by a static event), so it is not listed.
+# Zone counts from Bohemia's 1.30 files.
+InfectedVillage_D_MULTIPLIER: 1.0 # 67 zones
+InfectedCity_D_MULTIPLIER: 1.0 # 23 zones
+InfectedSolitude_D_MULTIPLIER: 1.0 # lone infected in the wild, 85 zones
+InfectedPolice_D_MULTIPLIER: 1.0 # 16 zones
+InfectedMedic_D_MULTIPLIER: 1.0 # 13 zones
+InfectedReligious_D_MULTIPLIER: 1.0 # 16 zones
+InfectedFirefighter_D_MULTIPLIER: 1.0 # 3 zones
+InfectedIndustrial_D_MULTIPLIER: 1.0 # 45 zones
+InfectedPrisoner_D_MULTIPLIER: 1.0 # 1 zone
+InfectedArmy_D_MULTIPLIER: 1.0 # 33 zones
+InfectedArmyHard_D_MULTIPLIER: 1.0 # 14 zones
+InfectedNBC_D_MULTIPLIER: 1.0 # 5 zones
+
 # --- Animals (db/events.xml) ---
 
 # Same scheme: final = nominal/min/max * ANIMAL_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
-# Per-event keys (wolves, bears, ...) are map-specific and live in config.<map>.yml.
 ANIMAL_GLOBAL_D_MULTIPLIER: 1.0
+
+# Pack counts. Pack size lives in events.xml <children>.
+AnimalWolf_D_MULTIPLIER: 1.0 # Default: 11 packs
+AnimalBear_D_MULTIPLIER: 1.0 # Default: 0 in the shipped file. Zero stays zero; raise nominal in events.xml to enable.
 
 # --- Vehicles (db/events.xml) ---
 
-# Same scheme. Per-event keys (boats, cars, ...) live in config.<map>.yml.
+# Same scheme: final = nominal/min/max * VEHICLE_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
 VEHICLE_GLOBAL_D_MULTIPLIER: 1.0
+
+VehicleBoat_D_MULTIPLIER: 1.0 # Default: 5 boats
+VehicleMotorbike_D_MULTIPLIER: 1.0 # Default: 12 motorbikes
 
 # --- Loot (db/types.xml) ---
 

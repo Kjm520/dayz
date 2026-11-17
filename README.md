@@ -1,6 +1,6 @@
 DayZ console mods with Nitrado.
 
-Currently, variables are being created and extracted, to later be substituted with values that are assigned in a single place (config.yml). This removes the grueling process of crawling DayZ xml files looking for settings that may or may not have other dependent values that break the game. Certain changes, be it wolf count, or spawn box settings, can silently break the game. 
+Currently, variables are being created and extracted, to later be substituted with values that are assigned in one config file per map (config.nasdara.yml, config.sakhal.yml). This removes the grueling process of crawling DayZ xml files looking for settings that may or may not have other dependent values that break the game. Certain changes, be it wolf count, or spawn box settings, can silently break the game. 
 
 Example: "INFECTED_GLOBAL_D_MULTIPLIER: 2.0" - This single value applies the multiplier across all of the zombie types respective to their original proportion. 
 
@@ -14,10 +14,10 @@ Set your repo's secrets for "FTP_HOST", "FTP_PASSWORD", and "FTP_USERNAME" to th
 
 ### Build
 
-    python scripts/substitute.py   # config layers + remote/ -> dist/
+    python scripts/substitute.py   # config.<map>.yml + remote/ -> dist/
     python scripts/validate.py     # checks dist/ before it is uploaded
 
-Config is layered. `config.yml` holds values shared by every map. `config.<map>.yml` holds one map's own values, named after the part of the mission folder after the dot, so `config.sakhal.yml` applies to `dayzOffline.sakhal`. A mission sees the shared file with its own file on top; the same key in both means the map file wins. Map-specific things (zone and event names, animals, vehicles, coordinates) belong in the map file; tuning you want everywhere belongs in the shared one.
+Config is one complete file per map. `config.<map>.yml` is named after the part of the mission folder after the dot, so `config.sakhal.yml` applies to `dayzOffline.sakhal`. Nothing is shared between maps: map size and landscape change what even the global multipliers should be, so each file carries every value its mission needs and is tuned on its own. A mission folder with no config file fails the build. A config for an official map that has no mission folder is parked: the build ignores it, and it is there to tune ahead of a switch. Any other unmatched config name is warned about as a likely typo.
 
 The GitHub Action runs both scripts on every push to main, then FTPs `dist/` to Nitrado. A placeholder with no value, an XML/JSON file that does not parse, or a loadout naming an item class that is not in types.xml fails the build and nothing is uploaded. Variables in any config file that nothing uses are warned about (typo catcher). So are event children that can never spawn: in a `<limit>custom</limit>` event (every infected event) a child's `min` is its percent of the event's spawn budget, handed out in file order, so once the running total reaches 100 every child after it gets nothing.
 
@@ -31,35 +31,37 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
 
 
 
-### Chernarus (`dayzOffline.chernarusplus`)
+### Chernarus (`dayzOffline.chernarusplus`) - parked
 
-    - No changes
+    - Not deployed. config.chernarusplus.yml holds the live maps' tuning with this map's own event names, ready for a switch.
 
 
-### Livonia (`dayzOffline.enoch`)
+### Livonia (`dayzOffline.enoch`) - parked
 
-    - No changes
+    - Not deployed. config.enoch.yml holds the live maps' tuning with this map's own event names, ready for a switch.
 
 
 ### Nasdara (`dayzOffline.nasdara`) - active
 
-    - Map-specific values are in config.nasdara.yml; shared tuning in config.yml.
+    - Every value is in config.nasdara.yml. Nothing is shared with other maps.
     - remote/ holds only the files that change. Everything else stays as the server shipped it.
     - Infected density 2x (zones and events). Wild dog packs 1.5x (no wolves or bears on this map). Motorbikes 0.5x (no boats).
-    - Survival: shared loot tuning (food 0.5x, tools 0.7x, min thresholds 0.85x, one-hour restock floor, infected carry at most 2), same loadouts, no starting bandage.
-    - Economy globals and unconscious recovery: same as Sakhal.
+    - Survival: food loot 0.5x, tools 0.7x, loot min thresholds 0.8x so the map empties further before restocking, one-hour restock floor, infected carry at most 2 items, no starting bandage.
+    - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
+    - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
     - Map shows player position.
     - Spawn points: the 60 vanilla points, with group rotation turned off. Vanilla ships them as a single group with rotation on, which has nothing to rotate to.
     - Ships the six animal territory files cfgenvironment.xml references but the Nitrado install lacks (sheep, goat, mouflon, fox, monitor lizard, dogs), taken from Bohemia's 1.30 mission files. Without them those animals have nowhere to spawn.
     - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added as the first child of the InfectedMedic and InfectedArmy events in db/events.xml. Child `min` values are percent shares that must total 100, so the vanilla types were squeezed to make room. Mummy is 16 percent at army zones and 10 percent at hospitals, about one per small zone and three at a large base.
+    - Thirty lone Mummies in the wilderness: an InfectedMummy event plus 30 one-infected zones in env/zombie_territories.xml, each at a lootable structure at least 300 m from every other infected zone (so nothing else spawns there) and at least 900 m from the next one. The structure and its isolation are noted beside each zone.
 
 ### Sakhal (`dayzOffline.sakhal`) - kept for switching back
 
-    - Map-specific values are in config.sakhal.yml; shared tuning in config.yml.
+    - Every value is in config.sakhal.yml. Nothing is shared with other maps.
     - Spawn points are vanilla. config.sakhal.yml notes how to pin a single test spawn again.
     - Spawn geared (main_loadout.json) for testing density settings (DMR has the loudest shot).
     - Infected density 2x (zones and events), wolves 1.5x, boats 0.5x.
-    - Survival: food loot 0.5x, tools 0.7x, loot min thresholds 0.85x so the map empties further before restocking, one-hour restock floor, infected carry at most 2 items, no starting bandage.
+    - Survival: food loot 0.5x, tools 0.7x, loot min thresholds 0.8x so the map empties further before restocking, one-hour restock floor, infected carry at most 2 items, no starting bandage.
     - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
     - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
     - Map shows player position.

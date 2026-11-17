@@ -678,6 +678,23 @@
             <child lootmax="5" lootmin="0" max="0" min="13" type="ZmbM_takiHiker_White"/>
         </children>
     </event>
+    <event name="InfectedMummy">
+        <nominal>50</nominal>
+        <min>25</min>
+        <max>100</max>
+        <lifetime>3</lifetime>
+        <restock>0</restock>
+        <saferadius>100</saferadius>
+        <distanceradius>50</distanceradius>
+        <cleanupradius>100</cleanupradius>
+        <flags deletable="0" init_random="0" remove_damaged="1"/>
+        <position>player</position>
+        <limit>custom</limit>
+        <active>1</active>
+        <children>
+            <child lootmax="2" lootmin="0" max="0" min="100" type="ZmbM_Mummy"/>
+        </children>
+    </event>
     <event name="InfectedSpooky">
         <nominal>50</nominal>
         <min>25</min>
