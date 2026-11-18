@@ -46,7 +46,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Every value is in config.nasdara.yml. Nothing is shared with other maps.
     - remote/ holds only the files that change. Everything else stays as the server shipped it.
     - Infected density 2x (zones and events). Wild dog packs 1.5x (no wolves or bears on this map). Motorbikes 0.5x (no boats).
-    - Survival: food loot 0.5x, tools 0.7x, loot min thresholds 0.8x so the map empties further before restocking, one-hour restock floor, infected carry at most 2 items, no starting bandage.
+    - Loot: vanilla. The loot knobs in config.nasdara.yml sit at their neutral values. No starting bandage.
     - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
     - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
     - Map shows player position.
@@ -61,7 +61,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Spawn points are vanilla. config.sakhal.yml notes how to pin a single test spawn again.
     - Spawn geared (main_loadout.json) for testing density settings (DMR has the loudest shot).
     - Infected density 2x (zones and events), wolves 1.5x, boats 0.5x.
-    - Survival: food loot 0.5x, tools 0.7x, loot min thresholds 0.8x so the map empties further before restocking, one-hour restock floor, infected carry at most 2 items, no starting bandage.
+    - Loot: vanilla. The loot knobs in config.sakhal.yml sit at their neutral values. No starting bandage.
     - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
     - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
     - Map shows player position.

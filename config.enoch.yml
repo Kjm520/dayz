@@ -24,8 +24,8 @@
 # Zero values in the XML are always preserved.
 INFECTED_GLOBAL_D_MULTIPLIER: 2.0
 
-# Most items an infected can carry. Vanilla is 5 for nearly every type.
-INFECTED_LOOT_MAX: 2
+# Most items an infected can carry. Vanilla is 5 for nearly every type; uncomment to cap it.
+#INFECTED_LOOT_MAX: 2
 
 # Per-event spawn parameters, for reference (edit events.xml directly if needed):
 #   lifetime 3, restock 0, saferadius 100, distanceradius 50, cleanupradius 100
@@ -64,22 +64,21 @@ VEHICLE_GLOBAL_D_MULTIPLIER: 1.0
 VehicleBoat_D_MULTIPLIER: 1.0 # Default: 5 boats
 VehicleMotorbike_D_MULTIPLIER: 1.0 # Default: 12 motorbikes
 
-# --- Loot (db/types.xml) ---
+# --- Loot (db/types.xml) --- vanilla
 
 # Scales nominal and min for every item in that types.xml category (rounds up, never to zero).
-# Categories: food, tools, weapons, clothes, containers, explosives, lootdispatch.
-LOOT_FOOD_MULTIPLIER: 0.5
-LOOT_TOOLS_MULTIPLIER: 0.7
+# Categories: food, tools, weapons, clothes, containers, explosives, lootdispatch. 1.0 = vanilla.
+LOOT_FOOD_MULTIPLIER: 1.0
+LOOT_TOOLS_MULTIPLIER: 1.0
 
 # Scales min ONLY, for every spawning type, after the category multiplier above.
-# A wider gap between min and nominal lets the map empty further before the CE
-# restocks anything, so a looted town stays looted and you travel.
-# Rounds DOWN, never below 1, so small thresholds actually move: min 3 -> 2, min 20 -> 16.
-LOOT_MIN_MULTIPLIER: 0.8
+# Below 1.0 widens the gap between min and nominal so the map empties further
+# before the CE restocks anything. Rounds DOWN, never below 1: at 0.8, min 3 -> 2, min 20 -> 16.
+LOOT_MIN_MULTIPLIER: 1.0
 
 # Minimum restock delay in seconds. Vanilla is 0 for most items, so a type
-# refills as soon as it drops under min. One hour slows the map-wide top-up.
-LOOT_RESTOCK_MIN: 3600
+# refills as soon as it drops under min. 3600 would slow the map-wide top-up to an hour.
+LOOT_RESTOCK_MIN: 0
 
 # --- Economy Globals (db/globals.xml) ---
 

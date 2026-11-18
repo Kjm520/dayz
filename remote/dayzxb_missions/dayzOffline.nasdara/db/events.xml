@@ -310,7 +310,7 @@
         <limit>custom</limit>
         <active>1</active>
         <children>
-            <child lootmax="2" lootmin="0" max="0" min="16" type="ZmbM_Mummy"/>
+            <child lootmax="5" lootmin="0" max="0" min="16" type="ZmbM_Mummy"/>
             <child lootmax="5" lootmin="0" max="0" min="17" type="ZmbF_usSoldier_normal_Desert"/>
             <child lootmax="5" lootmin="0" max="0" min="17" type="ZmbM_takiSoldier_Normal_Olive"/>
             <child lootmax="5" lootmin="0" max="0" min="17" type="ZmbM_takiSoldier_Normal_Tan"/>
@@ -513,7 +513,7 @@
         <limit>custom</limit>
         <active>1</active>
         <children>
-            <child lootmax="2" lootmin="0" max="0" min="10" type="ZmbM_Mummy"/>
+            <child lootmax="5" lootmin="0" max="0" min="10" type="ZmbM_Mummy"/>
             <child lootmax="5" lootmin="0" max="0" min="10" type="ZmbF_DoctorSkinny"/>
             <child lootmax="5" lootmin="0" max="0" min="6" type="ZmbF_NurseFat"/>
             <child lootmax="5" lootmin="0" max="0" min="6" type="ZmbF_ParamedicNormal_Blue"/>
@@ -692,7 +692,7 @@
         <limit>custom</limit>
         <active>1</active>
         <children>
-            <child lootmax="2" lootmin="0" max="0" min="100" type="ZmbM_Mummy"/>
+            <child lootmax="5" lootmin="0" max="0" min="100" type="ZmbM_Mummy"/>
         </children>
     </event>
     <event name="InfectedSpooky">
