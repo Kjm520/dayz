@@ -46,6 +46,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Every value is in config.nasdara.yml. Nothing is shared with other maps.
     - remote/ holds only the files that change. Everything else stays as the server shipped it.
     - Infected density 2x (zones and events). Wild dog packs 1.5x (no wolves or bears on this map). Motorbikes 0.5x (no boats).
+    - Infected zones wake at 400 m instead of 300, so a town's band is on its feet before you can see into it and more of a town is live at once.
     - Loot: vanilla. The loot knobs in config.nasdara.yml sit at their neutral values. No starting bandage.
     - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
     - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
@@ -53,7 +54,7 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
     - Spawn points: the 60 vanilla points, with group rotation turned off. Vanilla ships them as a single group with rotation on, which has nothing to rotate to.
     - Ships the six animal territory files cfgenvironment.xml references but the Nitrado install lacks (sheep, goat, mouflon, fox, monitor lizard, dogs), taken from Bohemia's 1.30 mission files. Without them those animals have nowhere to spawn.
     - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added as the first child of the InfectedMedic and InfectedArmy events in db/events.xml. Child `min` values are percent shares that must total 100, so the vanilla types were squeezed to make room. Mummy is 16 percent at army zones and 10 percent at hospitals, about one per small zone and three at a large base.
-    - Thirty lone Mummies in the wilderness: an InfectedMummy event plus 30 one-infected zones in env/zombie_territories.xml, each at a lootable structure at least 300 m from every other infected zone (so nothing else spawns there) and at least 900 m from the next one. The structure and its isolation are noted beside each zone.
+    - Thirty lone Mummies in the wilderness: an InfectedMummy event plus 30 one-infected zones in env/zombie_territories.xml, each at a lootable structure at least 300 m from every other infected zone and at least 900 m from the next one. With zones waking at 400 m, ten of the thirty spots have a neighbouring zone close enough to wake while you stand at the structure; the other twenty stay Mummy-only. The structure and its isolation are noted beside each zone.
 
 ### Sakhal (`dayzOffline.sakhal`) - kept for switching back
 
