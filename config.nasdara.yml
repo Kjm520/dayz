@@ -87,4 +87,4 @@ ZONE_SPAWN_DIST: "400" # Default: 300 - metres from an infected zone at which it
 
 # Shock regenerates at this rate per second while unconscious. Solo, nobody is
 # going to wake you, so 1.0 means minutes of staring at black. 2.0 halves it.
-SHOCK_REFILL_UNCONSCIOUS: 2.0 # Default: 1.0
+SHOCK_REFILL_UNCONSCIOUS: 3.0 # Default: 1.0
