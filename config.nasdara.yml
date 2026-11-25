@@ -75,7 +75,7 @@ LOOT_RESTOCK_MIN: 0
 # --- Economy Globals (db/globals.xml) ---
 
 ANIMAL_MAX_COUNT: "500" # Default: 200 - cap on living animals map-wide
-CLEANUP_DEAD_INFECTED: "1200" # Default: 330 - seconds a dead infected stays
+CLEANUP_DEAD_INFECTED: "600" # Default: 330 - seconds a dead infected stays
 CLEANUP_DEAD_PLAYER: "7200" # Default: 3600 - seconds your body (and gear) stays for a recovery run
 LOOT_DAMAGE_MAX: "0.70" # Default: 0.82 - most damage loot can spawn with (0 = pristine)
 TIME_LOGIN: "3" # Default: 15 - login timer, seconds
