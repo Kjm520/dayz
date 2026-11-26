@@ -50,12 +50,14 @@ ANIMAL_GLOBAL_D_MULTIPLIER: 1.0
 AnimalDog_D_MULTIPLIER: 1.5 # 8 packs -> 12. Nasdara's answer to Sakhal's wolves.
 
 # Bears ship inactive AND unwired: the mission carries the AnimalBear event at nominal 0 and a
-# bear_territories.xml that is a byte-for-byte copy of Livonia's (85 Graze zones in the southern
-# half, x 329-12438, z 1012-6246), but cfgenvironment.xml never references either. Our
-# remote/cfgenvironment.xml wires the Bear herd and remote/db/events.xml turns the event on at
-# Sakhal's vanilla 5. This multiplier is the verification setting: 40 map-wide so the first
-# encounter comes quickly. Drop to 1.0 once a bear has been seen; 0 turns them off again
-# (nominal 0, as the mission shipped).
+# bear_territories.xml that is Livonia's file unchanged (85 zones covering only the south-west
+# 12.8 km of a 16.4 km map), and cfgenvironment.xml never references either. Our
+# remote/cfgenvironment.xml wires the Bear herd, remote/db/events.xml turns the event on at
+# Sakhal's vanilla 5, and remote/env/bear_territories.xml is our own zone file: zones on Bohemia's
+# Nasdara wolf, mouflon and goat ground across the southern and eastern half, none in the
+# north-west quadrant where every fresh spawn is (!aux/make_bear_zones.py rebuilds it).
+# This multiplier is the verification setting: 40 bears so the first encounter comes quickly.
+# Drop to 1.0 once a bear has been seen; 0 turns them off again (nominal 0, as the mission shipped).
 AnimalBear_D_MULTIPLIER: 8.0 # 5 -> 40
 
 # --- Vehicles (db/events.xml) ---
@@ -108,3 +110,11 @@ ZONE_SPAWN_DIST: "400" # Default: 300 - metres from an infected zone at which it
 # Shock regenerates at this rate per second while unconscious. Solo, nobody is
 # going to wake you, so 1.0 means minutes of staring at black. 2.0 halves it.
 SHOCK_REFILL_UNCONSCIOUS: 3.0 # Default: 1.0
+
+# --- Weather (cfggameplay.json) --- Nasdara only; the sandstorm is scripted into this map alone
+
+# Multiplies the 8 percent chance that a bad-weather spell turns into a sandstorm. Nasdara's weather
+# changes every 20-30 minutes and about one change in four turns bad, so vanilla 1.0 is roughly one
+# storm per 20-25 hours of server time, and a few hours of play a day rarely meets one. 0 switches
+# them off; 12.5 makes every bad spell a storm. cfgweather.xml has no say in this and ships disabled.
+SANDSTORM_FREQUENCY: 1.0 # Default: 1.0

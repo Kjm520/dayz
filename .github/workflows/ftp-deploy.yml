@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:  # manual run from the Actions tab, e.g. to test new FTP secrets
+    inputs:
+      restart:
+        description: "Restart the server after the upload"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -44,3 +49,31 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+
+      - name: Restart the server
+        # Opt in per push with [restart] in the commit message (or the checkbox on a manual run), so a
+        # README edit does not bounce the server. This step only starts after the upload step has
+        # returned, then waits a moment for Nitrado to settle the FTP writes before the restart copies
+        # the mission. The token is a Nitrado long-life token with the "service" scope.
+        if: contains(github.event.head_commit.message, '[restart]') || inputs.restart
+        env:
+          TOKEN: ${{ secrets.NITRADO_SERVICE_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$TOKEN" ]; then
+            echo "::error::restart requested but the NITRADO_SERVICE_TOKEN secret is not set"
+            exit 1
+          fi
+          sleep 10
+          services=$(curl -sS --fail -H "Authorization: Bearer $TOKEN" https://api.nitrado.net/services)
+          ids=$(echo "$services" | jq -r '.data.services[] | select(.type == "gameserver") | .id')
+          if [ "$(echo "$ids" | grep -c .)" -ne 1 ]; then
+            echo "::error::expected exactly one gameserver on the account, found: $(echo "$services" | jq -c '[.data.services[] | {id, type, game: .details.game}]')"
+            exit 1
+          fi
+          reply=$(curl -sS --fail -X POST -H "Authorization: Bearer $TOKEN" \
+            --data-urlencode "message=GitHub Actions deploy ${GITHUB_SHA::7}" \
+            --data-urlencode "restart_message=Restarting for a config update" \
+            "https://api.nitrado.net/services/$ids/gameservers/restart")
+          echo "$reply" | jq .
+          [ "$(echo "$reply" | jq -r .status)" = "success" ]

@@ -129,6 +129,6 @@
   },
   "SandstormData":
   {
-    "sandstormFrequency": 1.0
+    "sandstormFrequency": "{{SANDSTORM_FREQUENCY}}"
   }
 }
