@@ -17,6 +17,8 @@ Tuning applied per mission, keys looked up in that mission's config:
   * db/events.xml nominal/min/max, Infected* events x INFECTED_GLOBAL_D_MULTIPLIER x <Event>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Animal* events   x ANIMAL_GLOBAL_D_MULTIPLIER   x <Event>_D_MULTIPLIER
   * db/events.xml nominal/min/max, Vehicle* events  x VEHICLE_GLOBAL_D_MULTIPLIER  x <Event>_D_MULTIPLIER
+  * <Name>_D_ABSOLUTE replaces the group global for that zone/event instead of stacking on
+    it, for placed counts that must not follow a density change
   * db/events.xml Infected* children lootmin/lootmax capped at INFECTED_LOOT_MAX
   * db/types.xml nominal/min per category            x LOOT_<CATEGORY>_MULTIPLIER (e.g. LOOT_FOOD_MULTIPLIER)
   * db/types.xml restock raised to at least LOOT_RESTOCK_MIN seconds
@@ -136,7 +138,11 @@ def substitute_file(path, config, missing):
 
 
 def multiplier_for(name, config):
-    """Combined multiplier for a zone/event name: group global x per-name."""
+    """Combined multiplier for a zone/event name: group global x per-name.
+
+    <Name>_D_ABSOLUTE replaces the global instead of stacking on it, so a placed
+    count (one Mummy per spot) stays put when the density multiplier changes.
+    """
     if name.startswith("Infected"):
         global_key = "INFECTED_GLOBAL_D_MULTIPLIER"
     elif name.startswith("Animal"):
@@ -145,6 +151,9 @@ def multiplier_for(name, config):
         global_key = "VEHICLE_GLOBAL_D_MULTIPLIER"
     else:
         return 1.0
+    absolute_key = f"{name}_D_ABSOLUTE"
+    if absolute_key in config:
+        return float(config.get(absolute_key))
     combined = 1.0
     for key in (global_key, f"{name}_D_MULTIPLIER"):
         if key in config:
@@ -296,6 +305,11 @@ def load_configs():
             errors.append(f"remote/{MISSIONS_DIR}/{folder} has no {name}")
             continue
         missions[folder] = MissionConfig(name, load_yaml(path))
+        for key in missions[folder].values:
+            if key.endswith("_D_ABSOLUTE"):
+                stacked = key[:-len("_D_ABSOLUTE")] + "_D_MULTIPLIER"
+                if stacked in missions[folder].values:
+                    errors.append(f"{name} sets both {key} and {stacked}; an absolute value replaces the multiplier, keep one")
 
     known_keys = {mission_key(folder) for folder in missions}
     for path in sorted(glob.glob(os.path.join(ROOT, "config.*.yml"))):
@@ -319,7 +333,7 @@ def main():
     if errors:
         for e in errors:
             print(f"ERROR: {e}")
-        print(f"Build failed: {len(errors)} mission(s) without a config file.")
+        print(f"Build failed: {len(errors)} config error(s).")
         return 1
 
     missing = set()

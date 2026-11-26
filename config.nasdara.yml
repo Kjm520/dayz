@@ -9,8 +9,9 @@
 # --- Infected (env/zombie_territories.xml + db/events.xml) ---
 
 # Final value = dmin/dmax (and event nominal/min/max) * INFECTED_GLOBAL_D_MULTIPLIER * <Type>_D_MULTIPLIER
-# Zero values in the XML are always preserved.
-INFECTED_GLOBAL_D_MULTIPLIER: 2.0
+# Zero values in the XML are always preserved. Raise ZOMBIE_MAX_COUNT (below) with this: the
+# budget shares do not follow the multiplier, and a budget-capped base shows no change at all.
+INFECTED_GLOBAL_D_MULTIPLIER: 3.0
 
 # Most items an infected can carry. Vanilla is 5 for nearly every type; uncomment to cap it.
 #INFECTED_LOOT_MAX: 2
@@ -36,9 +37,9 @@ InfectedArmyION_D_MULTIPLIER: 1.0
 InfectedArmyConvoy_D_MULTIPLIER: 1.0
 InfectedNBCYellow_D_MULTIPLIER: 1.0
 # Placed singles, not a density: 30 lone Mummies at isolated structures (zones and event
-# named InfectedMummy). 0.5 cancels the 2.0 global so each spot holds exactly one.
-# Change this together with the global.
-InfectedMummy_D_MULTIPLIER: 0.5
+# named InfectedMummy). _D_ABSOLUTE replaces the global instead of stacking on it, so each
+# spot holds exactly one whatever the global is set to.
+InfectedMummy_D_ABSOLUTE: 1.0
 
 # --- Animals (db/events.xml) ---
 
@@ -53,8 +54,8 @@ AnimalDog_D_MULTIPLIER: 1.5 # 8 packs -> 12. Nasdara's answer to Sakhal's wolves
 # half, x 329-12438, z 1012-6246), but cfgenvironment.xml never references either. Our
 # remote/cfgenvironment.xml wires the Bear herd and remote/db/events.xml turns the event on at
 # Sakhal's vanilla 5. This multiplier is the verification setting: 40 map-wide so the first
-# encounter comes quickly. Drop to 1.0 once a bear has been seen, or 0 would be a no-op (zero
-# stays zero), so to turn them off again set <active>0</active> in events.xml.
+# encounter comes quickly. Drop to 1.0 once a bear has been seen; 0 turns them off again
+# (nominal 0, as the mission shipped).
 AnimalBear_D_MULTIPLIER: 8.0 # 5 -> 40
 
 # --- Vehicles (db/events.xml) ---
@@ -90,6 +91,16 @@ LOOT_DAMAGE_MAX: "0.70" # Default: 0.82 - most damage loot can spawn with (0 = p
 TIME_LOGIN: "3" # Default: 15 - login timer, seconds
 TIME_LOGOUT: "3" # Default: 15 - logout timer, seconds
 TIME_PENALTY: "10" # Default: 20 - extra wait after a combat or forced disconnect
+# Cap on infected in the world, split across the infected events in proportion to their zones'
+# total dmax; the RPT prints the split at start ("InfectedArmyION :: dmax: 320.0, 4.2 % == 41 pcs"
+# at 2x). The shares do not move with the density multipliers. Vanilla's 1000 is sized for a
+# full server; solo, a small-footprint event's share is less than one of its bases: ArmyION had
+# 41 pieces against bases wanting 48-72, and the 11-25 base log shows kills coming back only as
+# whole waves once their corpses cleaned up, 20 minutes later. A cap, not a spawn count: only
+# awake zones hold infected, so a large value costs nothing. 7000 keeps every event's share above
+# two full clusters at 3x (one being fought, one still cleaning up); !aux/budget_check.py shows the
+# per-event numbers for any zone file, cap and wake distance.
+ZOMBIE_MAX_COUNT: "7000" # Default: 1000
 ZONE_SPAWN_DIST: "400" # Default: 300 - metres from an infected zone at which it wakes and spawns its band
 
 # --- Solo QoL (cfggameplay.json) ---

@@ -91,6 +91,11 @@ LOOT_DAMAGE_MAX: "0.70" # Default: 0.82 - most damage loot can spawn with (0 = p
 TIME_LOGIN: "3" # Default: 15 - login timer, seconds
 TIME_LOGOUT: "3" # Default: 15 - logout timer, seconds
 TIME_PENALTY: "10" # Default: 20 - extra wait after a combat or forced disconnect
+# Cap on infected in the world, split across the infected events in proportion to their zones'
+# total dmax (the RPT prints the split at start as "... % == N pcs"). The shares do not move
+# with the density multipliers, so a small-footprint event's share can be less than one of its
+# bases; raise this when raising density or the base is budget-limited, not zone-limited.
+ZOMBIE_MAX_COUNT: "1000" # Default: 1000
 ZONE_SPAWN_DIST: "300" # Default: 300 - metres from an infected zone at which it wakes and spawns its band
 
 # --- Solo QoL (cfggameplay.json) ---

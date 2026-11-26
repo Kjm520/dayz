@@ -23,7 +23,9 @@ The GitHub Action runs both scripts on every push to main, then FTPs `dist/` to 
 
 In JSON files write placeholders as strings, `"{{VAR}}"`, so the source stays valid JSON. Numbers and booleans come out bare in dist/.
 
-Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in events.xml. Infected ones are also multiplied by `INFECTED_GLOBAL_D_MULTIPLIER` (and their zombie_territories dmin/dmax); animal ones by `ANIMAL_GLOBAL_D_MULTIPLIER`; vehicle ones by `VEHICLE_GLOBAL_D_MULTIPLIER`. `LOOT_<CATEGORY>_MULTIPLIER` scales nominal/min for a types.xml category, `LOOT_MIN_MULTIPLIER` then scales min alone (rounding down, never below 1) to widen the gap under nominal, `LOOT_RESTOCK_MIN` floors restock, and `INFECTED_LOOT_MAX` caps what infected carry. Everything else rounds up, so nothing scales to zero.
+Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in events.xml. Infected ones are also multiplied by `INFECTED_GLOBAL_D_MULTIPLIER` (and their zombie_territories dmin/dmax); animal ones by `ANIMAL_GLOBAL_D_MULTIPLIER`; vehicle ones by `VEHICLE_GLOBAL_D_MULTIPLIER`. `LOOT_<CATEGORY>_MULTIPLIER` scales nominal/min for a types.xml category, `LOOT_MIN_MULTIPLIER` then scales min alone (rounding down, never below 1) to widen the gap under nominal, `LOOT_RESTOCK_MIN` floors restock, and `INFECTED_LOOT_MAX` caps what infected carry. Everything else rounds up, so nothing scales to zero. `<EventName>_D_ABSOLUTE` replaces the global for that event instead of stacking on it, for a placed count that must not follow a density change (the Mummy singles); setting both forms for one name fails the build.
+
+Density has a second half: `ZOMBIE_MAX_COUNT` (globals.xml ZombieMaxCount). The engine splits it across the infected events in proportion to their zones' total dmax and prints the split in the RPT at start (`InfectedArmyION :: dmax: 320.0, 4.2 % == 41 pcs`); an event can hold no more than its share. The shares do not move with the multipliers, so raising density without raising the budget changes nothing at a base whose share is already smaller than its band.
 
 
 
@@ -45,7 +47,8 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
 
     - Every value is in config.nasdara.yml. Nothing is shared with other maps.
     - remote/ holds only the files that change. Everything else stays as the server shipped it.
-    - Infected density 2x (zones and events). Wild dog packs 1.5x (wolves ship inactive). Motorbikes 0.5x (no boats).
+    - Infected density 3x (zones and events). Wild dog packs 1.5x (wolves ship inactive). Motorbikes 0.5x (no boats).
+    - Infected budget ZombieMaxCount 7000 (vanilla 1000). At 2x the ArmyION share was 41 for the whole map against bases wanting 48 to 72, so a base filled to 41 and kills came back only when their corpses cleaned up, as one wave (the 11-25 log). It is a cap, not a spawn count: only awake zones hold infected, so for a solo player the number just has to clear the largest cluster of any one event, with room for the previous fight's corpses.
     - Bears switched on. The shipped mission has the AnimalBear event at nominal 0 and an env/bear_territories.xml that is Livonia's file unchanged (85 zones across the southern half), but cfgenvironment.xml never wires them together. remote/cfgenvironment.xml adds the Bear herd the way every official map declares it, db/events.xml sets the event to Sakhal's vanilla 5 and active, and config.nasdara.yml multiplies that by 8 for the verification run. Dial the multiplier back once a bear has been met; a Nasdara-authored zone file is the follow-up, since the Livonia coordinates land wherever they land on this terrain.
     - Infected zones wake at 400 m instead of 300, so a town's band is on its feet before you can see into it and more of a town is live at once.
     - Loot: vanilla. The loot knobs in config.nasdara.yml sit at their neutral values. No starting bandage.
