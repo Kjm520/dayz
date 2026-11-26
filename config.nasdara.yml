@@ -45,8 +45,17 @@ InfectedMummy_D_MULTIPLIER: 0.5
 # Same scheme: final = nominal/min/max * ANIMAL_GLOBAL_D_MULTIPLIER * <Event>_D_MULTIPLIER
 ANIMAL_GLOBAL_D_MULTIPLIER: 1.0
 
-# No wolves or bears on Nasdara (both events ship inactive). Wild dog packs are the predator.
+# Wolves ship inactive. Wild dog packs are the shipped predator.
 AnimalDog_D_MULTIPLIER: 1.5 # 8 packs -> 12. Nasdara's answer to Sakhal's wolves.
+
+# Bears ship inactive AND unwired: the mission carries the AnimalBear event at nominal 0 and a
+# bear_territories.xml that is a byte-for-byte copy of Livonia's (85 Graze zones in the southern
+# half, x 329-12438, z 1012-6246), but cfgenvironment.xml never references either. Our
+# remote/cfgenvironment.xml wires the Bear herd and remote/db/events.xml turns the event on at
+# Sakhal's vanilla 5. This multiplier is the verification setting: 40 map-wide so the first
+# encounter comes quickly. Drop to 1.0 once a bear has been seen, or 0 would be a no-op (zero
+# stays zero), so to turn them off again set <active>0</active> in events.xml.
+AnimalBear_D_MULTIPLIER: 8.0 # 5 -> 40
 
 # --- Vehicles (db/events.xml) ---
 

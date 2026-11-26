@@ -45,7 +45,8 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
 
     - Every value is in config.nasdara.yml. Nothing is shared with other maps.
     - remote/ holds only the files that change. Everything else stays as the server shipped it.
-    - Infected density 2x (zones and events). Wild dog packs 1.5x (no wolves or bears on this map). Motorbikes 0.5x (no boats).
+    - Infected density 2x (zones and events). Wild dog packs 1.5x (wolves ship inactive). Motorbikes 0.5x (no boats).
+    - Bears switched on. The shipped mission has the AnimalBear event at nominal 0 and an env/bear_territories.xml that is Livonia's file unchanged (85 zones across the southern half), but cfgenvironment.xml never wires them together. remote/cfgenvironment.xml adds the Bear herd the way every official map declares it, db/events.xml sets the event to Sakhal's vanilla 5 and active, and config.nasdara.yml multiplies that by 8 for the verification run. Dial the multiplier back once a bear has been met; a Nasdara-authored zone file is the follow-up, since the Livonia coordinates land wherever they land on this terrain.
     - Infected zones wake at 400 m instead of 300, so a town's band is on its feet before you can see into it and more of a town is live at once.
     - Loot: vanilla. The loot knobs in config.nasdara.yml sit at their neutral values. No starting bandage.
     - Economy globals: more animals, longer corpse persistence, better-condition loot, short login/logout timers.
