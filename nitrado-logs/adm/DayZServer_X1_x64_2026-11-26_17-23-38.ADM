@@ -1,0 +1,24 @@
+
+
+******************************************************************************
+AdminLog started on 2026-11-26 at 17:23:38
+17:31:49 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE) is connecting
+17:32:02 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14829.6, 7872.7, 209.2>) is connected
+17:33:30 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14819.2, 7857.8, 210.0>)[HP: 99.8439] hit by FallDamageHealth
+17:34:26 | ##### PlayerList log: 1 players
+17:34:26 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14869, 7984.5, 209.6>)
+17:34:26 | #####
+17:35:05 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14869.3, 7987.7, 211.1>)[HP: 97.6625] hit by Infected into LeftLeg(8) for 9.35 damage (MeleeSoldierInfectedLong)
+17:35:07 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14869.9, 7988.6, 211.2>)[HP: 95.4153] hit by Infected into LeftLeg(8) for 9.35 damage (MeleeSoldierInfectedLong)
+17:35:08 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14870.7, 7989.6, 211.0>)[HP: 93.0778] hit by Infected into LeftLeg(8) for 9.35 damage (MeleeSoldierInfectedLong)
+17:35:11 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14870.9, 7991.0, 211.1>)[HP: 92.3181] hit by Infected into RightArm(17) for 8.5 damage (MeleeSoldierInfected)
+17:37:18 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14867.2, 7988.2, 209.2>)[HP: 95.0005] hit by Infected into RightArm(17) for 8.5 damage (MeleeSoldierInfected)
+17:39:26 | ##### PlayerList log: 1 players
+17:39:26 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14837.2, 7880.8, 209.0>)
+17:39:26 | #####
+17:43:00 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14828.7, 7872.8, 209.2>) performed EmoteSitA
+17:43:03 | Player "KJM52" (id=B0A1E2114BB8B79200A9B3F7F2A50C0B1373D3EE pos=<14828.5, 7872.8, 209.2>) has been disconnected
+22:00:08 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE) is connecting
+22:00:19 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<4093.1, 6276.4, 310.6>) is connected
+22:01:23 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<4097.7, 6282.8, 310.7>) performed EmoteSitA
+22:01:26 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<4097.9, 6283.0, 310.8>) has been disconnected
