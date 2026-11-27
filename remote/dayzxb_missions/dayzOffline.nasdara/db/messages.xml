@@ -3,23 +3,8 @@
      Board as of 2026-11-26 16:18:44 server time, the last log line ingested. -->
 <messages>
     <message>
-        <delay>1</delay>
+        <delay>0</delay>
         <onconnect>1</onconnect>
-        <text>Longest alive: KJM52, 19 h 13 m</text>
-    </message>
-    <message>
-        <delay>2</delay>
-        <onconnect>1</onconnect>
-        <text>2nd longest: TeamsterDan, 2 h 2 m</text>
-    </message>
-    <message>
-        <delay>3</delay>
-        <onconnect>1</onconnect>
-        <text>3rd longest: WotEvaMan5248, 1 h 50 m</text>
-    </message>
-    <message>
-        <delay>4</delay>
-        <onconnect>1</onconnect>
-        <text>Survivor board refreshes when the server restarts</text>
+        <text>Longest alive: KJM52 19h 13m, TeamsterDan 2h 2m, WotEvaMan5248 1h 50m. Board updates at restart.</text>
     </message>
 </messages>

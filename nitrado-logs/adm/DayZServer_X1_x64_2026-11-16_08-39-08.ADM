@@ -1,0 +1,101 @@
+
+
+******************************************************************************
+AdminLog started on 2026-11-16 at 08:39:08
+09:22:03 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE) is connecting
+09:22:17 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10912.6, 11763.7, 177.7>) is connected
+09:24:51 | ##### PlayerList log: 1 players
+09:24:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10774.8, 11725.1, 180.8>)
+09:24:51 | #####
+09:25:01 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10768.9, 11731, 179.8>)[HP: 98.6384] hit by FallDamageHealth
+09:25:29 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10771.9, 11738.2, 179.8>)[HP: 99.1992] hit by FallDamageHealth
+09:29:51 | ##### PlayerList log: 1 players
+09:29:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10544.6, 11581.2, 191.4>)
+09:29:51 | #####
+09:30:05 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10535.5, 11592.2, 190.5>)[HP: 96.7612] hit by FallDamageHealth
+09:31:19 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10520.2, 11634.3, 190.5>)[HP: 98.4487] hit by FallDamageHealth
+09:33:19 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10464.2, 11786.1, 190.3>)[HP: 94.3701] hit by FallDamageHealth
+09:34:51 | ##### PlayerList log: 1 players
+09:34:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10456.5, 11776.8, 191.1>)
+09:34:51 | #####
+09:34:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10456.5, 11776.8, 190.3>)[HP: 93.6967] hit by FallDamageHealth
+09:39:51 | ##### PlayerList log: 1 players
+09:39:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10247, 11872.9, 207.6>)
+09:39:51 | #####
+09:41:27 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10252, 11862.4, 206.5>) placed Barrel<Barrel_Yellow>
+09:43:37 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10187.4, 11909.7, 208.1>)[HP: 99.9975] hit by FallDamageHealth
+09:44:51 | ##### PlayerList log: 1 players
+09:44:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10169.1, 11911.9, 208.4>)
+09:44:51 | #####
+09:46:09 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10164.2, 11892.7, 213.3>)[HP: 99.7063] hit by FallDamageHealth
+09:46:14 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10174.3, 11899.3, 208.2>)[HP: 99.2648] hit by FallDamageHealth
+09:49:04 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10080, 11923.1, 210.6>)[HP: 98.5915] hit by FallDamageHealth
+09:49:51 | ##### PlayerList log: 1 players
+09:49:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10078, 11901, 211.2>)
+09:49:51 | #####
+09:54:51 | ##### PlayerList log: 1 players
+09:54:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<10045.8, 11827.5, 207.0>)
+09:54:51 | #####
+09:58:33 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9985.1, 11823.9, 205.9>)[HP: 97.8836] hit by FallDamageHealth
+09:59:51 | ##### PlayerList log: 1 players
+09:59:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9995.7, 11751.8, 204.0>)
+09:59:51 | #####
+10:00:17 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9998.1, 11712.7, 201.1>) placed Barrel<Barrel_Green>
+10:04:51 | ##### PlayerList log: 1 players
+10:04:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9730.3, 11857.5, 196.8>)
+10:04:51 | #####
+10:09:37 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9465.9, 11715.3, 196.2>)[HP: 99.9747] hit by FallDamageHealth
+10:09:51 | ##### PlayerList log: 1 players
+10:09:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9460.0, 11757.1, 197.8>)
+10:09:51 | #####
+10:12:53 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9424.5, 11856.3, 201.5>)[HP: 99.7382] hit by FallDamageHealth
+10:14:51 | ##### PlayerList log: 1 players
+10:14:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9301.7, 11880.2, 207.0>)
+10:14:51 | #####
+10:19:51 | ##### PlayerList log: 1 players
+10:19:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9116.5, 11859.3, 227.4>)
+10:19:51 | #####
+10:24:51 | ##### PlayerList log: 1 players
+10:24:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9062.6, 11949.3, 228.9>)
+10:24:51 | #####
+10:29:51 | ##### PlayerList log: 1 players
+10:29:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9058.3, 11923.4, 228.5>)
+10:29:51 | #####
+10:33:50 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9083.6, 11944.4, 226.8>) placed Barrel<Barrel_Red>
+10:34:51 | ##### PlayerList log: 1 players
+10:34:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9088.9, 11959.7, 226.9>)
+10:34:51 | #####
+10:39:51 | ##### PlayerList log: 1 players
+10:39:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9087.8, 12133.7, 222.4>)
+10:39:51 | #####
+10:44:51 | ##### PlayerList log: 1 players
+10:44:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9133.9, 12040.1, 222.3>)
+10:44:51 | #####
+10:46:09 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9181.8, 11970.2, 216.9>)[HP: 94.4582] hit by FallDamageHealth
+10:49:51 | ##### PlayerList log: 1 players
+10:49:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9142.6, 11953.1, 224.6>)
+10:49:51 | #####
+10:54:51 | ##### PlayerList log: 1 players
+10:54:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<9088.3, 12047.3, 225.9>)
+10:54:51 | #####
+10:59:51 | ##### PlayerList log: 1 players
+10:59:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8782.4, 12411.1, 231.9>)
+10:59:51 | #####
+11:04:32 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8822.5, 12530.9, 241.8>)[HP: 71.6104] hit by FallDamageHealth
+11:04:51 | ##### PlayerList log: 1 players
+11:04:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8821.9, 12555.1, 240.9>)
+11:04:51 | #####
+11:09:51 | ##### PlayerList log: 1 players
+11:09:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8816.6, 12550.2, 240.1>)
+11:09:51 | #####
+11:12:11 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8654.3, 12784.2, 247.7>)[HP: 75.2781] hit by FallDamageHealth
+11:14:51 | ##### PlayerList log: 1 players
+11:14:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8456.9, 12799.3, 246.9>)
+11:14:51 | #####
+11:19:51 | ##### PlayerList log: 1 players
+11:19:51 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8419.8, 12344.9, 233.0>)
+11:19:51 | #####
+11:24:50 | ##### PlayerList log: 1 players
+11:24:50 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8313.4, 12434, 234.5>)
+11:24:50 | #####
+11:24:54 | Player "TeamsterDan" (id=7DA58FBE9FC55D27511E0B29B2CF4ECD2AF58AFE pos=<8313.4, 12434.0, 234.5>) has been disconnected

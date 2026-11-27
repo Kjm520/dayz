@@ -1,0 +1,89 @@
+name: Survivor board
+
+# The nightly restart, and the board refresh that rides on it. The running instance's admin log
+# reaches FTP only when the instance stops, so the job restarts the server first, waits for that
+# log, pulls it, updates the ledger and the board, and if the board changed uploads it and restarts
+# again so the engine reads it. Every failure leaves the server running and only the board stale.
+# The pulled admin logs, the ledger and the board are committed back as the archive.
+
+on:
+  schedule:
+    - cron: "17 9 * * *"  # 04:17 US Eastern in winter, 05:17 in summer; the server runs Eastern
+  workflow_dispatch:      # the button: refresh the board now (restarts the server, twice if the board changed)
+
+permissions:
+  contents: write  # commits the pulled logs, the ledger and the board
+
+concurrency:
+  group: nitrado-server  # never alongside a deploy; both talk to the same server
+
+jobs:
+  board:
+    runs-on: ubuntu-latest
+    env:
+      NITRADO_SERVICE_TOKEN: ${{ secrets.NITRADO_SERVICE_TOKEN }}
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_PORT: ${{ secrets.FTP_PORT }}
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: List the logs already on the server
+        run: python scripts/nitrado.py logs list | tee "$RUNNER_TEMP/before.txt"
+
+      - name: Restart the server
+        # Stops the running instance, which is what syncs its logs to FTP.
+        run: python scripts/nitrado.py restart --note "Nightly restart" --player-message "Nightly restart"
+
+      - name: Pull the new logs
+        run: >
+          python scripts/nitrado.py logs pull --adm nitrado-logs/adm --rpt "$RUNNER_TEMP/rpt"
+          --after "$RUNNER_TEMP/before.txt" --timeout 15
+
+      - name: Keep the RPT logs for 90 days
+        # Nitrado drops them after about three days. Too big for the repo, so they live as run artifacts.
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpt-${{ github.run_id }}
+          path: ${{ runner.temp }}/rpt
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Update the ledger and the board
+        run: python scripts/survivors.py
+
+      - name: Upload the board and restart again when it changed
+        # The engine reads messages.xml at start. A change to the "as of" comment alone is not worth
+        # a second restart. The status wait comes after the log wait above, so the first restart is
+        # known to have stopped the server by the time "started" is trusted.
+        run: |
+          file=$(git ls-files --modified -- 'remote/dayzxb_missions/*/db/messages.xml')
+          if [ -z "$file" ] || git diff --quiet -I 'Board as of' -- "$file"; then
+            echo "board unchanged; the nightly restart is all this run needed"
+            exit 0
+          fi
+          python scripts/nitrado.py wait-started --timeout 10
+          python scripts/nitrado.py put "$file" "/${file#remote/}"
+          sleep 10
+          python scripts/nitrado.py restart --note "Survivor board $(date -u +%F)" --player-message "Restarting with today's survivor board"
+
+      - name: Commit the logs, the ledger and the board
+        # Pushed with the workflow token, which does not trigger the deploy workflow.
+        run: |
+          git add nitrado-logs/adm data/survivors.json 'remote/dayzxb_missions/*/db/messages.xml'
+          if git diff --cached --quiet; then
+            echo "nothing new to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "survivor board $(date -u +%F)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin HEAD:"$GITHUB_REF_NAME"

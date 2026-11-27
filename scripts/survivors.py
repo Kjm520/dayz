@@ -8,19 +8,21 @@ player on connect with the longest-living characters and the last death.
     python scripts/survivors.py --rebuild                         # recompute the ledger from every archived log
 
 Inputs
-  * nitrado-logs/**/*.ADM   the archived admin logs (gitignored; pull them first). Folders whose
-                            name starts with "!scrap" are skipped. The same file name in two
-                            folders is read once, taking the larger copy.
+  * nitrado-logs/**/*.ADM   the archived admin logs. nitrado-logs/adm/ is the committed archive
+                            that the survivor-board workflow fills every night; any other folder
+                            there is a hand pull and gitignored. Folders whose name starts with
+                            "!scrap" are skipped. The same file name in two folders is read once,
+                            taking the larger copy.
   * data/survivors.json     the ledger: which logs were ingested, every character's time alive,
                             every death. History survives logs that are no longer around, so a
                             log is read once and only new files are ingested on later runs.
 
 Output
-  * remote/dayzxb_missions/<mission>/db/messages.xml   up to five onconnect messages, each shown
-    once, one minute apart, starting a minute after the player connects: the three longest-living
-    characters, the last death, then a note that the board refreshes at restart. The engine reads
-    the file at server start, so the board changes when the next deploy restarts the server.
-    Nothing else may live in this file; it is rewritten whole.
+  * remote/dayzxb_missions/<mission>/db/messages.xml   one message: the board as a single line,
+    shown once as the player connects (delay 0), with the three longest-living characters, the
+    last death and a note that it updates at restart. The engine reads the file at server start;
+    the survivor-board workflow uploads it and restarts the server whenever the board changed, and
+    a [restart] deploy applies it too. Nothing else may live in this file; it is rewritten whole.
 
 What counts
   * A character belongs to the player's id hash, never the name. Names can change, so the board
@@ -85,10 +87,10 @@ def fmt_duration(seconds):
     days, rest = divmod(minutes, 24 * 60)
     hours, minutes = divmod(rest, 60)
     if days:
-        return f"{days} d {hours} h"
+        return f"{days}d {hours}h"
     if hours:
-        return f"{hours} h {minutes} m"
-    return f"{minutes} m"
+        return f"{hours}h {minutes}m"
+    return f"{minutes}m"
 
 
 def distance(a, b):
@@ -266,33 +268,36 @@ def ingest(ledger, path):
 # --- board ----------------------------------------------------------------------------------
 
 
-def board_lines(ledger):
+def board_text(ledger):
+    """The board as one line, or None when no character has logged time and nobody has died."""
     players = ledger["players"].values()
     living = sorted((p for p in players if p["alive_seconds"] > 0), key=lambda p: -p["alive_seconds"])
-    labels = ("Longest alive", "2nd longest", "3rd longest")
-    lines = [f"{label}: {p['name']}, {fmt_duration(p['alive_seconds'])}" for label, p in zip(labels, living[:TOP])]
+    parts = []
+    if living:
+        ranked = ", ".join(f"{p['name']} {fmt_duration(p['alive_seconds'])}" for p in living[:TOP])
+        parts.append(f"Longest alive: {ranked}.")
     deaths = [d for p in players for d in p["deaths"]]
     if deaths:
         d = max(deaths, key=lambda d: d["at"])
-        lines.append(f"Last death: {d['name']}, {d['cause']} after {fmt_duration(d['alive_seconds'])}")
-    if lines:
-        lines.append("Survivor board refreshes when the server restarts")
-    return lines
+        parts.append(f"Last death: {d['name']}, {d['cause']} after {fmt_duration(d['alive_seconds'])}.")
+    if parts:
+        parts.append("Board updates at restart.")
+    return " ".join(parts) if parts else None
 
 
-def render(lines, as_of, path):
+def render(board, as_of, path):
     out = [
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
         f"<!-- {MARKER} from data/survivors.json; rerun the script instead of editing.",
         f"     Board as of {as_of} server time, the last log line ingested. -->",
         "<messages>",
     ]
-    for minute, text in enumerate(lines, start=1):
+    if board:
         out += [
             "    <message>",
-            f"        <delay>{minute}</delay>",
+            "        <delay>0</delay>",
             "        <onconnect>1</onconnect>",
-            f"        <text>{escape(text)}</text>",
+            f"        <text>{escape(board)}</text>",
             "    </message>",
         ]
     out.append("</messages>")
@@ -382,18 +387,15 @@ def main():
 
     save_ledger(ledger, args.ledger)
     as_of = max(f["end"] for f in ledger["files"].values()).replace("T", " ")
-    lines = board_lines(ledger)
-    render(lines, as_of, out_path)
+    board = board_text(ledger)
+    render(board, as_of, out_path)
 
     print(f"\n{ingested} new log(s), {len(ledger['files'])} in the ledger, board as of {as_of}")
     for pid, p in sorted(ledger["players"].items(), key=lambda kv: -kv[1]["alive_seconds"]):
         print(f"  {p['name']:<20} alive {fmt_duration(p['alive_seconds']):<12} since {p['since']}  "
               f"deaths {len(p['deaths'])}  resets {len(p['resets'])}  last seen {p['last_seen']}")
     print(f"\n{rel(out_path)}:")
-    for line in lines:
-        print(f"  {line}")
-    if not lines:
-        print("  (no character has logged time yet; the file carries no messages)")
+    print(f"  on connect: {board or '(no character has logged time yet; the file carries no message)'}")
 
 
 if __name__ == "__main__":

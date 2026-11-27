@@ -3,6 +3,7 @@
 DEFAULT/
 .tools/
 dist/
-nitrado-logs/
+nitrado-logs/*
+!nitrado-logs/adm/
 
 
