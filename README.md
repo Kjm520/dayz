@@ -29,6 +29,13 @@ Multipliers: `<EventName>_D_MULTIPLIER` scales that event's nominal/min/max in e
 
 Density has a second half: `ZOMBIE_MAX_COUNT` (globals.xml ZombieMaxCount). The engine splits it across the infected events in proportion to their zones' total dmax and prints the split in the RPT at start (`InfectedArmyION :: dmax: 320.0, 4.2 % == 41 pcs`); an event can hold no more than its share. The shares do not move with the multipliers, so raising density without raising the budget changes nothing at a base whose share is already smaller than its band.
 
+### Survivor board
+
+    python scripts/survivors.py                               # after pulling new logs into nitrado-logs/
+    python scripts/survivors.py --mission dayzOffline.nasdara # first run, or after a map switch
+
+Reads the archived admin logs (`nitrado-logs/**/*.ADM`, gitignored, pulled from the server after each session), updates `data/survivors.json`, the ledger of every character's connected time and every death, and writes `remote/dayzxb_missions/<mission>/db/messages.xml`: up to five messages shown once to a connecting player, a minute apart, with the three longest-living characters, the last death, and a closing note that the board refreshes at restart. The engine reads the file at start, so the board changes at the next restart; commit the ledger and the messages file together with `[restart]`. A log is ingested once and the ledger keeps what it said, so logs the server has since dropped (it keeps about three days) still count. A character ends at a `(DEAD)` line, or when a login lands away from the last logout position, which is how a death in a log that was never pulled shows up. Time alive is connected time, like the game's own stat. `--since` ignores logs before a wipe and `--rebuild` recomputes from the archive. The script owns `db/messages.xml` and refuses to overwrite one it did not write.
+
 
 
 
@@ -58,6 +65,7 @@ Density has a second half: `ZOMBIE_MAX_COUNT` (globals.xml ZombieMaxCount). The 
     - Unconscious shock recovery 2x so a solo knockout is not minutes of dead time.
     - Map shows player position.
     - Fresh spawns: 7 of the 20 vanilla bubbles, the ones in the north-west quadrant (x below 8192), so a new character never starts in bear country. The hop and travel sections keep all 20; they only fire for a character arriving from another server of a hive. Group rotation is off: vanilla ships one group with rotation on, which has nothing to rotate to.
+    - Survivor board: a connecting player gets the three longest-living characters, the last death and a note that the board refreshes at restart, one message a minute, once. db/messages.xml is generated from the admin logs by scripts/survivors.py and holds nothing else.
     - Ships the six animal territory files cfgenvironment.xml references but the Nitrado install lacks (sheep, goat, mouflon, fox, monitor lizard, dogs), taken from Bohemia's 1.30 mission files. Without them those animals have nowhere to spawn.
     - Mummy infected (ZmbM_Mummy, the tanky Halloween class) added as the first child of the InfectedMedic and InfectedArmy events in db/events.xml. Child `min` values are percent shares that must total 100, so the vanilla types were squeezed to make room. Mummy is 16 percent at army zones and 10 percent at hospitals, about one per small zone and three at a large base.
     - Thirty lone Mummies in the wilderness: an InfectedMummy event plus 30 one-infected zones in env/zombie_territories.xml, each at a lootable structure at least 300 m from every other infected zone and at least 900 m from the next one. With zones waking at 400 m, ten of the thirty spots have a neighbouring zone close enough to wake while you stand at the structure; the other twenty stay Mummy-only. The structure and its isolation are noted beside each zone.
