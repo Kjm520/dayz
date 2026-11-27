@@ -15,9 +15,12 @@ FTP_PASSWORD for the FTP. The workflows pass the repository secrets. Nothing her
 credential or a whole API reply: the gameserver details reply carries the FTP password.
 
 The running instance writes its logs to a working copy that reaches FTP only when the instance
-stops. `logs pull --after <listing>` therefore waits for an admin log that was not in a listing
-taken before a restart, then pulls every ADM (and RPT) the local folder lacks or holds at a
-different size. On timeout it warns and pulls what is there, so a job never fails for a slow sync.
+stops, and while the stop syncs that copy back the log folder is missing from the FTP altogether
+(NLST answers 450 within seconds of a restart request, seen 2026-11-27). `logs pull --after
+<listing>` therefore retries FTP errors, waits for an admin log that was not in a listing taken
+before the restart and for its size to hold still across two polls, then pulls every ADM (and
+RPT) the local folder lacks or holds at a different size. On timeout it warns and pulls what is
+there, so a job never fails for a slow sync.
 """
 import argparse
 import ftplib
@@ -115,14 +118,16 @@ def cmd_wait_started(args):
 
 
 def ftp_connect():
-    host = env("FTP_HOST")
+    """A logged-in connection. Raises ftplib.all_errors; the caller decides whether to retry."""
     ftp = ftplib.FTP()
-    try:
-        ftp.connect(host, int(os.environ.get("FTP_PORT") or 21), timeout=60)
-        ftp.login(env("FTP_USERNAME"), env("FTP_PASSWORD"))
-    except ftplib.all_errors as e:
-        sys.exit(f"FTP {host}: {e}")
+    ftp.connect(env("FTP_HOST"), int(os.environ.get("FTP_PORT") or 21), timeout=60)
+    ftp.login(env("FTP_USERNAME"), env("FTP_PASSWORD"))
     return ftp
+
+
+def ftp_error(e):
+    """Stop with the server's reply on one line; replies never carry the password."""
+    sys.exit(f"FTP {os.environ.get('FTP_HOST')}: {e}")
 
 
 def remote_logs(ftp):
@@ -154,41 +159,61 @@ def pull_logs(ftp, remote, suffix, into):
 
 
 def cmd_logs_list(args):
-    with ftp_connect() as ftp:
-        for name in sorted(remote_logs(ftp)):
-            print(name)
+    try:
+        with ftp_connect() as ftp:
+            names = sorted(remote_logs(ftp))
+    except ftplib.all_errors as e:
+        ftp_error(e)
+    print("\n".join(names))
 
 
 def cmd_logs_pull(args):
+    """Download the logs the local folders lack. With --after, first sit out the restart: the
+    log folder is gone from the FTP while the stop syncs the working copy back, so FTP errors
+    are retried until the deadline, and a new admin log counts only once it is listed with the
+    same size on two polls in a row, so a file still being copied is never pulled."""
     before = None
     if args.after:
         with open(args.after, encoding="utf-8") as f:
             before = {line.strip() for line in f if line.strip()}
     deadline = time.monotonic() + args.timeout * 60
+    previous = {}
     while True:
-        with ftp_connect() as ftp:  # a fresh connection per poll; none is held open while waiting
-            remote = remote_logs(ftp)
-            fresh = sorted(n for n in remote if is_adm(n) and n not in before) if before is not None else []
-            waiting = before is not None and not fresh and time.monotonic() < deadline
-            if not waiting:
-                if fresh:
-                    print("new since the listing: " + ", ".join(fresh))
-                elif before is not None:
-                    warn(f"no new admin log reached FTP in {args.timeout:g} minutes; pulling what is there")
-                pulled = pull_logs(ftp, remote, ".ADM", args.adm)
-                if args.rpt:
-                    pulled += pull_logs(ftp, remote, ".RPT", args.rpt)
+        try:
+            with ftp_connect() as ftp:  # a fresh connection per poll; none is held open while waiting
+                remote = remote_logs(ftp)
+                fresh = sorted(n for n in remote if is_adm(n) and n not in before) if before is not None else []
+                settled = bool(fresh) and all(previous.get(n) == remote[n] for n in fresh)
+                waiting = before is not None and not settled and time.monotonic() < deadline
+                if not waiting:
+                    if settled:
+                        print("new since the listing: " + ", ".join(fresh))
+                    elif before is not None:
+                        warn(f"no settled new admin log on FTP after {args.timeout:g} minutes; pulling what is there")
+                    pulled = pull_logs(ftp, remote, ".ADM", args.adm)
+                    if args.rpt:
+                        pulled += pull_logs(ftp, remote, ".RPT", args.rpt)
+                previous = remote
+            note = "waiting for the stopped instance's admin log to reach FTP and hold its size"
+        except ftplib.all_errors as e:
+            if before is None or time.monotonic() >= deadline:
+                ftp_error(e)
+            waiting = True
+            note = f"FTP not ready while the server restarts ({e})"
         if not waiting:
             break
-        print("waiting for the stopped instance's admin log to reach FTP ...", flush=True)
+        print(note + " ...", flush=True)
         time.sleep(FTP_POLL_SECONDS)
     print(f"{len(pulled)} file(s) pulled; the server holds {sum(map(is_adm, remote))} ADM and "
           f"{len(remote) - sum(map(is_adm, remote))} RPT")
 
 
 def cmd_put(args):
-    with ftp_connect() as ftp, open(args.local, "rb") as f:
-        ftp.storbinary(f"STOR {args.remote}", f)
+    try:
+        with ftp_connect() as ftp, open(args.local, "rb") as f:
+            ftp.storbinary(f"STOR {args.remote}", f)
+    except ftplib.all_errors as e:
+        ftp_error(e)
     print(f"uploaded {args.local} -> {args.remote}")
 
 
